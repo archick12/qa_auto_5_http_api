@@ -61,7 +61,7 @@ public class RestAPIIssueTests {
         // TO DO your test
     }
 
-    @Test//(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
     public void remoteIssueLinksCRUD() {
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
@@ -77,6 +77,7 @@ public class RestAPIIssueTests {
                 when().
                 get("/rest/api/2/issue/13561/remotelink").
                 then().
+                log().all().
                 extract().
                 asString();
 
@@ -85,13 +86,14 @@ public class RestAPIIssueTests {
                 header("Accept","application/json").
                 header("Content-Type","application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForAddRemoteLink).
                 when().
                 post("/rest/api/2/issue/13561/remotelink").
                 then().log().all().
-                statusCode(200).contentType(ContentType.JSON);
+                statusCode(201).contentType(ContentType.JSON);
         String responseBody = response.extract().asString();
         System.out.printf("\nRESPONSE: " + responseBody);
-        String linkedIssueKey = response.extract().path("key");
+        String linkId = response.extract().path("id").toString();
         
         /* delete link to Remote Issue */
         given().
@@ -99,8 +101,8 @@ public class RestAPIIssueTests {
                 header("Cookie", "JSESSIONID=" + sessionId).
                 body(jsonForAddRemoteLink).
                 when().
-                delete("/rest/api/2/issue/" + linkedIssueKey).
-                then().
+                delete("/rest/api/2/issue/" + issueType +"/remotelink/"+ linkId).
+                then().log().all().
                 statusCode(204).contentType(ContentType.JSON);
 
     }
