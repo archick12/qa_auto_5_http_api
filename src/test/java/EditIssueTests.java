@@ -48,38 +48,37 @@ public class EditIssueTests {
 
     }
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL","HTTP"})
+    @Test //(priority = 2, groups = {"Regression", "HTTP"},dependsOnGroups = {"CRITICAL","HTTP"})
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
 
          /* test data and parameters */
 
-        String jsonForAddDescription = "{" + "\" body\": \"My description\""+"}";
+        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\""+"}}";
         response = given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
                 body(jsonForAddDescription).
                 when().
-                post("/rest/api/2/issue/13561").
+                put("/rest/api/2/issue/13561").
                 then().log().all().
-                statusCode(201).contentType(ContentType.JSON);
+                statusCode(204).contentType(ContentType.JSON);
 
         String responseBody = response.extract().asString();
         System.out.printf("\nRESPONSE: " + responseBody);
-        String issueKey = response.extract().path("key");
 
-
-        /* delete issue */
-        String jsonForDeleteDescription = "{" + "\" body\": \"\""+"}";
-        given().
+        String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\""+"}}";
+        response = given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
                 body(jsonForDeleteDescription).
                 when().
-                delete("/rest/api/2/issue/13561" + issueKey).
-                then().
+                put("/rest/api/2/issue/13561").
+                then().log().all().
                 statusCode(204).contentType(ContentType.JSON);
+
+        System.out.printf("\nRESPONSE: " + responseBody);
     }
     }
 
