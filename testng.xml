@@ -2,14 +2,16 @@
 <suite name="HTTP API" parallel="classes" thread-count="3">
 
     <test name="Tests for Issue CRUD">
+
         <groups>
             <run>
                 <include name="HTTP"/>
                 <exclude name="SKIP"/>
             </run>
         </groups>
+
         <classes>
-            <class name="RestAPIIssueTests"/>
+            <class name="EditIssueTests"/>
         </classes>
     </test>
 
