@@ -11,7 +11,7 @@ public class RestAPIIssueTests {
     String projectId = "10502";
     String issueType = "13561";
 
-    @BeforeTest(groups = {"CRITICAL", "HTTP"})
+    @Test(groups = {"CRITICAL", "HTTP"})
     public void authentication(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         String credentialsJSON = "{" +
@@ -34,7 +34,7 @@ public class RestAPIIssueTests {
 }
 
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void commentCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
@@ -48,20 +48,38 @@ public class RestAPIIssueTests {
 
     }
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
+        
+        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\""+"}}";
+        response = given().
+                header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForAddDescription).
+                when().
+                put("/rest/api/2/issue/13561").
+                then().log().all().
+                statusCode(204).contentType(ContentType.JSON);
 
-         /* test data and parameters */
+        String responseBody = response.extract().asString();
+        System.out.printf("\nRESPONSE: " + responseBody);
 
-        String jsonForAddDescription = "JSON for your test";
+        String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\""+"}}";
+        response = given().
+                header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForDeleteDescription).
+                when().
+                put("/rest/api/2/issue/13561").
+                then().log().all().
+                statusCode(204).contentType(ContentType.JSON);
 
-
-        // TO DO your test
+        System.out.printf("\nRESPONSE: " + responseBody);
     }
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void remoteIssueLinksCRUD() {
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;

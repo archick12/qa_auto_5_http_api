@@ -11,7 +11,7 @@
         </groups>
 
         <classes>
-            <class name="EditIssueTests"/>
+            <class name="RestAPIIssueTests"/>
         </classes>
     </test>
 
