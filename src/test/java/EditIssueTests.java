@@ -8,7 +8,7 @@ import static io.restassured.RestAssured.given;
 public class EditIssueTests {
     String sessionId = "";
     String projectId = "10502";
-    String issueType = "10104";
+    String issueType = "13561";
 
     @BeforeTest(groups = {"CRITICAL,HTTP"})
     public void authentication(){
@@ -40,62 +40,25 @@ public class EditIssueTests {
 
          /* test data and parameters */
 
-        String issueJSON = "JSON for your test";
-
-
-        // TO DO your test
-
-    }
-
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL,HTTP"})
-    public void remoteIssueLinkCRUD(){
-        RestAssured.baseURI = "http://jira.hillel.it:8080";
-        ValidatableResponse response;
-
-         /* test data and parameters */
-
-        String issueJSON = "JSON for your test";
-
-        // TO DO your test
-    }
-
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL,HTTP"})
-    public void worklogCRUD(){
-        RestAssured.baseURI = "http://jira.hillel.it:8080";
-        ValidatableResponse response;
-
-         /* test data and parameters */
-
-        String issueJSON = "JSON for your test";
+        String jsonForAddComment = "JSON for your test";
+        String jsonForUpdateComment = "";
 
         // TO DO your test
 
     }
 
     @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL,HTTP"})
-    public void assignIssue(){
+    public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
 
          /* test data and parameters */
 
-        String issueJSON = "JSON for your test";
+        String jsonForAddDescription = "JSON for your test";
+
 
         // TO DO your test
-
-
     }
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL,HTTP"})
-    public void addWatcherToIssue(){
-        RestAssured.baseURI = "http://jira.hillel.it:8080";
-        ValidatableResponse response;
 
-         /* test data and parameters */
-
-        String issueJSON = "JSON for your test";
-
-        // TO DO your test
-
-    }
 }
