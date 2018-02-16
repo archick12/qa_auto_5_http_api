@@ -1,4 +1,5 @@
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -10,7 +11,7 @@ public class EditIssueTests {
     String projectId = "10502";
     String issueType = "13561";
 
-    @BeforeTest(groups = {"CRITICAL,HTTP"})
+    @BeforeTest(groups = {"CRITICAL","HTTP"})
     public void authentication(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         String credentialsJSON = "{" +
@@ -33,7 +34,7 @@ public class EditIssueTests {
 }
 
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL,HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL","HTTP"})
     public void commentCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
@@ -47,18 +48,40 @@ public class EditIssueTests {
 
     }
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL,HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL","HTTP"})
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
 
          /* test data and parameters */
 
-        String jsonForAddDescription = "JSON for your test";
+        String jsonForAddDescription = "{" + "\" body\": \"My description\""+"}";
+        response = given().
+                header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForAddDescription).
+                when().
+                post("/rest/api/2/issue/13561").
+                then().log().all().
+                statusCode(201).contentType(ContentType.JSON);
+
+        String responseBody = response.extract().asString();
+        System.out.printf("\nRESPONSE: " + responseBody);
+        String issueKey = response.extract().path("key");
 
 
-        // TO DO your test
+        /* delete issue */
+        String jsonForDeleteDescription = "{" + "\" body\": \"\""+"}";
+        given().
+                header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForDeleteDescription).
+                when().
+                delete("/rest/api/2/issue/13561" + issueKey).
+                then().
+                statusCode(204).contentType(ContentType.JSON);
+    }
     }
 
 
-}
+
