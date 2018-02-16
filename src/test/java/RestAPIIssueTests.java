@@ -6,12 +6,12 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
-public class EditIssueTests {
+public class RestAPIIssueTests {
     String sessionId = "";
     String projectId = "10502";
     String issueType = "13561";
 
-    @BeforeTest(groups = {"CRITICAL","HTTP"})
+    @BeforeTest(groups = {"CRITICAL", "HTTP"})
     public void authentication(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         String credentialsJSON = "{" +
@@ -34,7 +34,7 @@ public class EditIssueTests {
 }
 
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL","HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
     public void commentCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
@@ -48,39 +48,62 @@ public class EditIssueTests {
 
     }
 
-    @Test //(priority = 2, groups = {"Regression", "HTTP"},dependsOnGroups = {"CRITICAL","HTTP"})
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
 
          /* test data and parameters */
 
-        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\""+"}}";
-        response = given().
-                header("Content-Type", "application/json").
-                header("Cookie", "JSESSIONID=" + sessionId).
-                body(jsonForAddDescription).
-                when().
-                put("/rest/api/2/issue/13561").
-                then().log().all().
-                statusCode(204).contentType(ContentType.JSON);
+        String jsonForAddDescription = "JSON for your test";
 
+
+        // TO DO your test
+    }
+
+    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL", "HTTP"})
+    public void remoteIssueLinksCRUD() {
+        RestAssured.baseURI = "http://jira.hillel.it:8080";
+        ValidatableResponse response;
+        String jsonForAddRemoteLink = "{\"object\": {\n" +
+                "\"url\": \"https://obmenka.od.ua/\",\n" +
+                "\"title\": \"obmenka\"\n" +
+                "}}";
+
+        /* HTTP Request to get ID's for Remote Issue Links*/
+        String result = given().
+                header("Accept","application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                when().
+                get("/rest/api/2/issue/13561/remotelink").
+                then().
+                log().all().
+                extract().
+                asString();
+
+        /* create new link to Remote Issue */
+        response = given().
+                header("Accept","application/json").
+                header("Content-Type","application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForAddRemoteLink).
+                when().
+                post("/rest/api/2/issue/13561/remotelink").
+                then().log().all().
+                statusCode(201).contentType(ContentType.JSON);
         String responseBody = response.extract().asString();
         System.out.printf("\nRESPONSE: " + responseBody);
-
-        String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\""+"}}";
-        response = given().
+        String linkId = response.extract().path("id").toString();
+        
+        /* delete link to Remote Issue */
+        given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
-                body(jsonForDeleteDescription).
+                body(jsonForAddRemoteLink).
                 when().
-                put("/rest/api/2/issue/13561").
+                delete("/rest/api/2/issue/" + issueType +"/remotelink/"+ linkId).
                 then().log().all().
                 statusCode(204).contentType(ContentType.JSON);
 
-        System.out.printf("\nRESPONSE: " + responseBody);
     }
-    }
-
-
-
+}
