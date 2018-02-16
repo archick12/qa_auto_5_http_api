@@ -5,6 +5,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
     String sessionId = "";
@@ -41,10 +42,29 @@ public class RestAPIIssueTests {
 
          /* test data and parameters */
 
-        String jsonForAddComment = "JSON for your test";
-        String jsonForUpdateComment = "";
 
-        // TO DO your test
+        String jsonForUpdateComment = "";
+        String myComment= "test";
+        String jsonForAddComment = "{\"body\" : \"" + myComment + "\"}";
+
+        /* HTTP Requests for addComment*/
+        response = given().
+                header("Content-Type", "application/json").
+                body(jsonForAddComment).
+                when().
+                post("/rest/api/2/issue/13561/comment").
+                then();
+
+
+        String myCommentFromServer =response.extract().path("body");
+        String wholeJSON =response.extract().asString();
+        response.log().all();
+        response.statusCode(201);
+        response.contentType(ContentType.JSON);
+
+        assertEquals(myComment,myCommentFromServer );
+
+
 
     }
 
