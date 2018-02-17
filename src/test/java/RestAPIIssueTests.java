@@ -35,7 +35,7 @@ public class RestAPIIssueTests {
         System.out.printf("\nSESSION: "+ sessionId);
 }
 
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
+    @Test(groups = {"Regression", "HTTP"},dependsOnGroups = {"CRITICAL"})
     public void commentCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
@@ -94,7 +94,7 @@ public class RestAPIIssueTests {
 
         System.out.printf("\nRESPONSE: " + responseBody);
     }
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
+    @Test(groups = {"Regression", "HTTP"},dependsOnGroups = {"CRITICAL"})
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
@@ -124,7 +124,7 @@ public class RestAPIIssueTests {
                 statusCode(204).contentType(ContentType.JSON);
 
     }
-    @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
+    @Test(groups = {"Regression", "HTTP"},dependsOnGroups = {"CRITICAL"})
     public void remoteIssueLinksCRUD() {
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
