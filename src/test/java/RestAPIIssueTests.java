@@ -39,15 +39,10 @@ public class RestAPIIssueTests {
     public void commentCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
-
-         /* test data and parameters */
-
-
-        String jsonForUpdateComment = "";
         String myComment= "test";
         String jsonForAddComment = "{\"body\" : \"" + myComment + "\"}";
 
-        /* HTTP Requests for addComment*/
+        /* HTTP Request for addComment*/
         response = given().
                 header("Content-Type", "application/json").
                 body(jsonForAddComment).
@@ -55,16 +50,33 @@ public class RestAPIIssueTests {
                 post("/rest/api/2/issue/13561/comment").
                 then();
 
-
         String myCommentFromServer =response.extract().path("body");
         String wholeJSON =response.extract().asString();
+        String commentId = response.extract().path("id").toString();
         response.log().all();
         response.statusCode(201);
         response.contentType(ContentType.JSON);
 
         assertEquals(myComment,myCommentFromServer );
 
+         /* HTTP Request for Update Comment*/
+        String newComment = "New Comment";
+        String jsonForUpdateComment = "{\"body\" : \"" + newComment + "\"}";
+        response = given().
+                header("Content-Type", "application/json").
+                body(jsonForUpdateComment).
+                when().
+                put("/rest/api/2/issue/13561/comment" + commentId).
+                then().log().all().
+                statusCode(200);
+        String newCommentFromServer =response.extract().path("body");
 
+        assertEquals(newComment,newCommentFromServer);
+
+
+        //TO DO
+
+        /* HTTP Request for Delete Comment*/
 
     }
 
