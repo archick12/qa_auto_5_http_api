@@ -73,7 +73,6 @@ public class RestAPIIssueTests {
 
         assertEquals(newComment,newCommentFromServer);
 
-
         //TO DO
 
         /* HTTP Request for Delete Comment*/
