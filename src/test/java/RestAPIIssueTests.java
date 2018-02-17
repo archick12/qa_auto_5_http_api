@@ -78,6 +78,19 @@ public class RestAPIIssueTests {
 
         /* HTTP Request for Delete Comment*/
 
+        String deleteComment = "New Comment";
+        String jsonForDeleteComment = "{\"body\" : \"" + deleteComment + "\"}";
+        response = given().
+                header("Content-Type", "application/json").
+                body(jsonForDeleteComment).
+                when().
+                put("/rest/api/2/issue/13561/comment" + commentId).
+                then().log().all().
+                statusCode(204);
+        String newCommentFromServerDeleted =response.extract().path("body");
+
+        assertEquals(deleteComment,newCommentFromServerDeleted);
+
     }
 
     @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
