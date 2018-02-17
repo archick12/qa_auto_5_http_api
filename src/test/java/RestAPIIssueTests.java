@@ -34,7 +34,6 @@ public class RestAPIIssueTests {
         System.out.printf("\nSESSION: "+ sessionId);
 }
 
-
     @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void commentCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
@@ -45,6 +44,7 @@ public class RestAPIIssueTests {
         /* HTTP Request for addComment*/
         response = given().
                 header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
                 body(jsonForAddComment).
                 when().
                 post("/rest/api/2/issue/13561/comment").
@@ -64,9 +64,10 @@ public class RestAPIIssueTests {
         String jsonForUpdateComment = "{\"body\" : \"" + newComment + "\"}";
         response = given().
                 header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
                 body(jsonForUpdateComment).
                 when().
-                put("/rest/api/2/issue/13561/comment" + commentId).
+                put("/rest/api/2/issue/13561/comment/" + commentId).
                 then().log().all().
                 statusCode(200);
         String newCommentFromServer =response.extract().path("body");
@@ -77,18 +78,26 @@ public class RestAPIIssueTests {
 
         /* HTTP Request for Delete Comment*/
 
-        String deleteComment = "New Comment";
-        String jsonForDeleteComment = "{\"body\" : \"" + deleteComment + "\"}";
-        response = given().
+                given().
                 header("Content-Type", "application/json").
-                body(jsonForDeleteComment).
+                header("Cookie", "JSESSIONID=" + sessionId).
                 when().
-                delete("/rest/api/2/issue/13561/comment" + commentId).
+                delete("/rest/api/2/issue/13561/comment/" + commentId).
                 then().log().all().
                 statusCode(204);
-        String newCommentFromServerDeleted =response.extract().path("body");
 
-        assertEquals(deleteComment,newCommentFromServerDeleted);
+        String responseBody = response.extract().asString();
+        String jsonForDeleteComment = "{\"body\" : \"" + "\"}";
+        response = given().
+                header("Content-Type", "application/json").
+                header("Cookie", "JSESSIONID=" + sessionId).
+                body(jsonForDeleteComment).
+                when().
+                get("/rest/api/2/issue/13561/comment/" + commentId).
+                then().log().all().
+                statusCode(404).contentType(ContentType.JSON);
+
+        System.out.printf("\nRESPONSE: " + responseBody);
 
     }
 
@@ -96,7 +105,7 @@ public class RestAPIIssueTests {
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
-        
+
         String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\""+"}}";
         response = given().
                 header("Content-Type", "application/json").
@@ -156,7 +165,7 @@ public class RestAPIIssueTests {
         String responseBody = response.extract().asString();
         System.out.printf("\nRESPONSE: " + responseBody);
         String linkId = response.extract().path("id").toString();
-        
+
         /* delete link to Remote Issue */
         given().
                 header("Content-Type", "application/json").
