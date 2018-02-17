@@ -99,7 +99,7 @@ public class RestAPIIssueTests {
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
         String description = "My description";
-        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"" + description + "\"}}";
+        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\""+"}}";
 
           /* HTTP Request for add description to issue*/
         response = given().
@@ -108,13 +108,9 @@ public class RestAPIIssueTests {
                 body(jsonForAddDescription).
                 when().
                 put("/rest/api/2/issue/13561").
-                then().log().all().
-                statusCode(204).contentType(ContentType.JSON);
+                then().log().all();
 
         String responseBody = response.extract().asString();
-        String descriptionFromServer =response.extract().path("fields.description");
-        assertEquals(description,descriptionFromServer );
-
         String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\""+"}}";
 
         /* HTTP Request for delete description from issue*/
@@ -125,8 +121,8 @@ public class RestAPIIssueTests {
                 when().
                 put("/rest/api/2/issue/13561").
                 then().log().all().
-             statusCode(204).contentType(ContentType.JSON).
-                body("fields.description",equalTo(null));
+                statusCode(204).contentType(ContentType.JSON);
+
     }
     @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void remoteIssueLinksCRUD() {
