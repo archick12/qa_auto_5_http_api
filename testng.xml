@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="HTTP API" parallel="classes" thread-count="3">
+<suite name="HTTP API" >
 
     <test name="Tests for Issue CRUD">
 

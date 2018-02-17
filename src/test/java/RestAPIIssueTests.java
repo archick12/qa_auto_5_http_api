@@ -5,6 +5,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
@@ -21,7 +22,7 @@ public class RestAPIIssueTests {
                 "} "
                 ;
 
-        /* HTTP Requests for login*/
+        /* HTTP Request for login*/
         sessionId = given().
             header("Content-Type", "application/json").
             body(credentialsJSON).
@@ -56,7 +57,6 @@ public class RestAPIIssueTests {
         response.log().all();
         response.statusCode(201);
         response.contentType(ContentType.JSON);
-
         assertEquals(myComment,myCommentFromServer );
 
          /* HTTP Request for Update Comment*/
@@ -71,42 +71,37 @@ public class RestAPIIssueTests {
                 then().log().all().
                 statusCode(200);
         String newCommentFromServer =response.extract().path("body");
-
         assertEquals(newComment,newCommentFromServer);
-
-        //TO DO
-
+        
         /* HTTP Request for Delete Comment*/
-
-                given().
+        given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
                 when().
                 delete("/rest/api/2/issue/13561/comment/" + commentId).
                 then().log().all().
                 statusCode(204);
-
         String responseBody = response.extract().asString();
-        String jsonForDeleteComment = "{\"body\" : \"" + "\"}";
+
+        /* HTTP Request for confirm that comment was deleted*/
         response = given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
-                body(jsonForDeleteComment).
                 when().
                 get("/rest/api/2/issue/13561/comment/" + commentId).
                 then().log().all().
                 statusCode(404).contentType(ContentType.JSON);
 
         System.out.printf("\nRESPONSE: " + responseBody);
-
     }
-
     @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void descriptionCRUD(){
         RestAssured.baseURI = "http://jira.hillel.it:8080";
         ValidatableResponse response;
+        String description = "My description";
+        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"" + description + "\"}}";
 
-        String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\""+"}}";
+          /* HTTP Request for add description to issue*/
         response = given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
@@ -117,9 +112,12 @@ public class RestAPIIssueTests {
                 statusCode(204).contentType(ContentType.JSON);
 
         String responseBody = response.extract().asString();
-        System.out.printf("\nRESPONSE: " + responseBody);
+        String descriptionFromServer =response.extract().path("fields.description");
+        assertEquals(description,descriptionFromServer );
 
         String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\""+"}}";
+
+        /* HTTP Request for delete description from issue*/
         response = given().
                 header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
@@ -127,11 +125,9 @@ public class RestAPIIssueTests {
                 when().
                 put("/rest/api/2/issue/13561").
                 then().log().all().
-                statusCode(204).contentType(ContentType.JSON);
-
-        System.out.printf("\nRESPONSE: " + responseBody);
+             statusCode(204).contentType(ContentType.JSON).
+                body("fields.description",equalTo(null));
     }
-
     @Test(groups = {"Regression, HTTP"},dependsOnGroups = {"CRITICAL"})
     public void remoteIssueLinksCRUD() {
         RestAssured.baseURI = "http://jira.hillel.it:8080";
@@ -140,8 +136,6 @@ public class RestAPIIssueTests {
                 "\"url\": \"https://obmenka.od.ua/\",\n" +
                 "\"title\": \"obmenka\"\n" +
                 "}}";
-
-        /* HTTP Request to get ID's for Remote Issue Links*/
         String result = given().
                 header("Accept","application/json").
                 header("Cookie", "JSESSIONID=" + sessionId).
@@ -163,7 +157,6 @@ public class RestAPIIssueTests {
                 then().log().all().
                 statusCode(201).contentType(ContentType.JSON);
         String responseBody = response.extract().asString();
-        System.out.printf("\nRESPONSE: " + responseBody);
         String linkId = response.extract().path("id").toString();
 
         /* delete link to Remote Issue */
