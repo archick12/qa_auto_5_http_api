@@ -83,7 +83,7 @@ public class RestAPIIssueTests {
                 header("Content-Type", "application/json").
                 body(jsonForDeleteComment).
                 when().
-                put("/rest/api/2/issue/13561/comment" + commentId).
+                delete("/rest/api/2/issue/13561/comment" + commentId).
                 then().log().all().
                 statusCode(204);
         String newCommentFromServerDeleted =response.extract().path("body");
