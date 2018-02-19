@@ -46,7 +46,7 @@ public class JiraApiActions {
         .post(String.format(APIPathes.commentInIssue, issueId), jsonForAddComment);
 
     // response.log().all();
-    response.statusCode(200);
+    response.statusCode(201);
     response.contentType(ContentType.JSON);
     return response;
   }
