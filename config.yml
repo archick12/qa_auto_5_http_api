@@ -6,4 +6,4 @@ test:
     - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 steps:
   - store_test_results:
-      path: junit
+      path: ~/junit
