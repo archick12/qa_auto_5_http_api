@@ -42,75 +42,36 @@ public class RestAPIIssueTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
-    RestAssured.baseURI = "http://jira.hillel.it:8080";
-    ValidatableResponse response;
+
     String description = "My description";
-    String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\"" + "}}";
+    ValidatableResponse response = JiraApiActions.createDescription(issueId, description);
+    String myDescriptionFromServer = response.extract().path("body");
+    String descriptionId = response.extract().path("id").toString();
+    assertEquals(description,myDescriptionFromServer);
 
-          /* HTTP Request for add description to issue*/
-    response = given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddDescription).
-        when().
-        put("/rest/api/2/issue/13561").
-        then().log().all();
-
+    /* HTTP Request for add description to issue*/
+    JiraApiActions.deleteDescription(issueId, descriptionId);
     String responseBody = response.extract().asString();
-    String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\"" + "}}";
 
-        /* HTTP Request for delete description from issue*/
-    response = given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForDeleteDescription).
-        when().
-        put("/rest/api/2/issue/13561").
-        then().log().all().
-        statusCode(204).contentType(ContentType.JSON);
-
+    /* HTTP Request for delete description from issue*/
+    JiraApiActions.getNonExistingDescription(issueId, descriptionId);
   }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void remoteIssueLinksCRUD() {
-    RestAssured.baseURI = "http://jira.hillel.it:8080";
-    ValidatableResponse response;
-    String jsonForAddRemoteLink = "{\"object\": {\n" +
-        "\"url\": \"https://obmenka.od.ua/\",\n" +
-        "\"title\": \"obmenka\"\n" +
-        "}}";
-    String result = given().
-        header("Accept", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        when().
-        get("/rest/api/2/issue/13561/remotelink").
-        then().
-        log().all().
-        extract().
-        asString();
 
-        /* create new link to Remote Issue */
-    response = given().
-        header("Accept", "application/json").
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddRemoteLink).
-        when().
-        post("/rest/api/2/issue/13561/remotelink").
-        then().log().all().
-        statusCode(201).contentType(ContentType.JSON);
-    String responseBody = response.extract().asString();
+    ValidatableResponse response = JiraApiActions.addRemoteLink(issueId);
+    String link = "https://obmenka.od.ua";
+    String myLinkFromServer = response.extract().path("body");
     String linkId = response.extract().path("id").toString();
+    assertEquals(link, myLinkFromServer);
 
-        /* delete link to Remote Issue */
-    given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddRemoteLink).
-        when().
-        delete("/rest/api/2/issue/" + issueId + "/remotelink/" + linkId).
-        then().log().all().
-        statusCode(204).contentType(ContentType.JSON);
+    /* HTTP Request for Delete Remote Link*/
+    JiraApiActions.deleteRemoteLinkIssue(issueId, linkId);
+    String responseLinkBody = response.extract().asString();
+
+    /* HTTP Request for confirm that Remote Link was deleted*/
+    JiraApiActions.getNonExistingRemoteLink(issueId, linkId);
 
   }
 }

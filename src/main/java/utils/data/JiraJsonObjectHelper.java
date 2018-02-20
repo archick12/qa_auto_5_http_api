@@ -43,4 +43,18 @@ public class JiraJsonObjectHelper {
 
     return commentJSON.toJSONString();
   }
+
+  public static String generateJSONForDescription(String description) {
+    JSONObject descriptionJSON = new JSONObject();
+    descriptionJSON.put("body", description);
+
+    return descriptionJSON.toJSONString();
+}
+
+  public static String generateJSONForAddRemoteLink(String link) {
+    JSONObject remoteLinkJSON = new JSONObject();
+    remoteLinkJSON.put("body", link);
+
+    return remoteLinkJSON.toJSONString();
+  }
 }
