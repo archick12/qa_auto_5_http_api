@@ -1,9 +1,17 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="HTTP API" parallel="classes" thread-count="3">
+<suite name="HTTP API" >
 
-    <test name="Tests for Issue CRUD">
+    <test name="Tests for Edit Issue">
+
+        <groups>
+            <run>
+                <include name="HTTP"/>
+                <exclude name="SKIP"/>
+            </run>
+        </groups>
+
         <classes>
-            <class name="IssueRawTest"/>
+            <class name="RestAPIIssueTests"/>
         </classes>
     </test>
 

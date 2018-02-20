@@ -1,4 +1,6 @@
-/target
-/.idea
+.idea
+target/
 *.iml
-testng.xml
+environment/grid/**
+!/**/*.bat
+!/**/*.json
