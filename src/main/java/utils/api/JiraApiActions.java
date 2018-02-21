@@ -43,8 +43,8 @@ public class JiraApiActions {
   public static ValidatableResponse createComment(String issueId, String comment) {
     String jsonForAddComment = JiraJsonObjectHelper.generateJSONForComment(comment);
     ValidatableResponse response = HTTPMethods
-        .post(String.format(APIPathes.commentInIssue, issueId), jsonForAddComment);
-    response.statusCode(201);
+        .put(String.format(APIPathes.commentInIssue, issueId), jsonForAddComment);
+    response.statusCode(204);
     response.contentType(ContentType.JSON);
     return response;
   }
@@ -82,6 +82,15 @@ public class JiraApiActions {
             .put(String.format(APIPathes.descriptionInIssue, issueId), jsonForAddDescription);
     response.log().all();
     response.statusCode(204);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+
+  public static ValidatableResponse getDescription(String issueId) {
+    ValidatableResponse response = HTTPMethods
+              .get(String.format(APIPathes.descriptionInIssue, issueId));
+    response.log().all();
+    response.statusCode(200);
     response.contentType(ContentType.JSON);
     return response;
   }

@@ -48,16 +48,18 @@ public class RestAPIIssueTests {
     /* HTTP Request for add description to issue*/
     String description = "My description";
     
-    ValidatableResponse response = JiraApiActions.createDescription(issueId, description);
-    String descriptionFromServer = response.extract().path("body");
-    //String descriptionId =response.extract().path("id").toString();
+    JiraApiActions.createDescription(issueId, description);
+    ValidatableResponse response = JiraApiActions.getDescription(issueId);
+    String descriptionFromServer = response.extract().path("fields.description");
     assertEquals(description, descriptionFromServer);
 
     /* HTTP Request for delete description from issue*/
+
     String emptyDescription = "";
     JiraApiActions.createDescription(issueId, emptyDescription);
-    String editedDescriptionFromServer = response.extract().path("body");
-    assertEquals(emptyDescription, editedDescriptionFromServer);
+    response = JiraApiActions.getDescription(issueId);
+    descriptionFromServer = response.extract().path("fields.description");
+    assertEquals(null, descriptionFromServer);
     }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})

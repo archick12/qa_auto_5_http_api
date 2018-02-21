@@ -3,6 +3,8 @@ package utils.data;
 import org.json.simple.JSONObject;
 import utils.api.Authorization;
 
+import java.util.HashMap;
+
 public class JiraJsonObjectHelper {
 
 
@@ -46,7 +48,11 @@ public class JiraJsonObjectHelper {
 
   public static String generateJSONForDescription(String description) {
     JSONObject descriptionJSON = new JSONObject();
-    descriptionJSON.put("historyMetadata", description);
+    JSONObject descriptionValue = new JSONObject();
+
+    descriptionValue.put("description", description);
+    descriptionJSON.put("fields", descriptionValue);
+
     return descriptionJSON.toJSONString();
   }
 
