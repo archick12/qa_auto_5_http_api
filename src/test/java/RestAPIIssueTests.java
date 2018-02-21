@@ -34,7 +34,7 @@ public class RestAPIIssueTests {
     response = JiraApiActions.updateComment(issueId, commentId, newComment);
     String newCommentFromServer = response.extract().path("body");
     assertEquals(newComment, newCommentFromServer);
-        
+
     /* HTTP Request for Delete Comment*/
     JiraApiActions.deleteComment(issueId, commentId);
     String responseBody = response.extract().asString();
@@ -47,7 +47,7 @@ public class RestAPIIssueTests {
   public void descriptionCRUD() {
     /* HTTP Request for add description to issue*/
     String description = "My description";
-    
+
     JiraApiActions.createDescription(issueId, description);
     ValidatableResponse response = JiraApiActions.getDescription(issueId);
     String descriptionFromServer = response.extract().path("fields.description");
@@ -60,24 +60,29 @@ public class RestAPIIssueTests {
     response = JiraApiActions.getDescription(issueId);
     descriptionFromServer = response.extract().path("fields.description");
     assertEquals(null, descriptionFromServer);
-    }
+  }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void RemoteLinkToIssueCRUD() {
     /* HTTP Request for create new link to Remote Issue */
-    String url = "https://www.github.com/archick12/qa_auto_5_http_api";
+    String url = "http://jira.hillel.it:8080/browse/QAAUT-289";
     String title = "github";
+
     ValidatableResponse response = JiraApiActions.addRemoteLink(issueId, url, title);
-    String urlOfRemoteLinkFromServer = response.extract().path("object.url").toString();
-    String titleOfRemoteLinkFromServer = response.extract().path("object.title").toString();
-    String linkedIssueId = response.extract().path("id");
-    assertEquals(title, titleOfRemoteLinkFromServer);
-    assertEquals(url, urlOfRemoteLinkFromServer);
+    String urlOfRemoteLinkFromServer = response.extract().path("self").toString();
+    String linkedIssueId = response.extract().path("id").toString();
+
+    // https://stackoverflow.com/questions/11007008/whats-the-best-way-to-check-if-a-string-contains-a-url-in-java-android
+    boolean containsOnlyNumbers = linkedIssueId.matches("[0-9]+") && linkedIssueId.length() > 1;
+    boolean containsUrlToLink = urlOfRemoteLinkFromServer.contains("/remotelink/" + linkedIssueId);
+
+    assertEquals(true, containsOnlyNumbers);
+    assertEquals(true, containsUrlToLink);
 
     /* HTTP Request for delete link to Remote Issue */
-    JiraApiActions.deleteRemoteLinkIssue(issueId, linkedIssueId );
+    JiraApiActions.deleteRemoteLinkIssue(issueId, linkedIssueId);
 
     /* HTTP Request for confirm that remoteLink was deleted*/
     JiraApiActions.getNonExistingRemoteLink(issueId, linkedIssueId);
   }
-  }
+}
