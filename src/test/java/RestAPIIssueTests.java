@@ -42,15 +42,15 @@ public class RestAPIIssueTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
-    String description = "My description";
-
     /* HTTP Request for add description to issue*/
+    String description = "My description";
+    
     ValidatableResponse response = JiraApiActions.createDescription(issueId,description);
     String descriptionFromServer = response.extract().path("fields.description");
     assertEquals(description, descriptionFromServer);
 
     /* HTTP Request for delete description from issue*/
-        description = "";
+    String emptyDescription = "";
     JiraApiActions.createDescription(issueId,description);
     String editedDescriptionFromServer = response.extract().path("fields.description");
     assertEquals(description, descriptionFromServer);
@@ -66,7 +66,7 @@ public class RestAPIIssueTests {
     assertEquals(link, remoteLinkFromServer);
 
     /* HTTP Request for delete link to Remote Issue */
-       JiraApiActions.deleteRemoteLinkIssue(issueId, remoteLinkId );
+    JiraApiActions.deleteRemoteLinkIssue(issueId, remoteLinkId );
 
        /* HTTP Request for confirm that remoteLink was deleted*/
     JiraApiActions.getNonExistingRemoteLink(issueId, remoteLinkId);

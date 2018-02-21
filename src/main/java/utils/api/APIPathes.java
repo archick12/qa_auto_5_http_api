@@ -9,5 +9,4 @@ public interface APIPathes {
   String descriptionInIssue = "/rest/api/2/issue/%s";
   String remoteIssueLink = "/rest/api/2/issue/%s/remotelink";
   String existingRemoteIssueLink = "/rest/api/2/issue/%s/remotelink/%s";
-
 }

@@ -44,8 +44,6 @@ public class JiraApiActions {
     String jsonForAddComment = JiraJsonObjectHelper.generateJSONForComment(comment);
     ValidatableResponse response = HTTPMethods
         .post(String.format(APIPathes.commentInIssue, issueId), jsonForAddComment);
-
-    // response.log().all();
     response.statusCode(201);
     response.contentType(ContentType.JSON);
     return response;
@@ -74,6 +72,55 @@ public class JiraApiActions {
   public static void getNonExistingComment(String issueId, String commentId) {
     ValidatableResponse response = HTTPMethods
         .get(String.format(APIPathes.existingCommentInIssue, issueId, commentId));
+    response.statusCode(404);
+    response.contentType(ContentType.JSON);
+  }
+
+  public static ValidatableResponse createDescription(String issueId, String description) {
+    String jsonForAddDescription = JiraJsonObjectHelper.generateJSONForDescription(description);
+    ValidatableResponse response = HTTPMethods
+            .put(String.format(APIPathes.addDescriptionInIssue, issueId), jsonForAddDescription);
+    response.statusCode(204);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+
+  public static ValidatableResponse deleteDescription(String issueId, String descriptionId) {
+    ValidatableResponse response = HTTPMethods
+            .delete(String.format(APIPathes.existingDescriptionInIssue, issueId, descriptionId));
+
+    response.statusCode(204);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+
+  public static void getNonExistingDescription(String issueId, String descriptionId) {
+    ValidatableResponse response = HTTPMethods
+            .get(String.format(APIPathes.existingDescriptionInIssue, issueId, descriptionId));
+    response.statusCode(404);
+    response.contentType(ContentType.JSON);
+  }
+
+  public static ValidatableResponse addRemoteLink(String issueId) {
+    String jsonForAddRemoteLink = JiraJsonObjectHelper.generateJSONForAddRemoteLink(issueId);
+    ValidatableResponse response = HTTPMethods
+            .get(String.format(APIPathes.addRemoteLink, issueId, jsonForAddRemoteLink));
+    response.statusCode(201);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+
+  public static ValidatableResponse deleteRemoteLinkIssue(String issueId, String link) {
+    ValidatableResponse response = HTTPMethods
+            .delete(String.format(APIPathes.deleteRemoteLinkInIssue, issueId, link));
+
+    response.statusCode(204);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+  public static void getNonExistingRemoteLink(String issueId, String link) {
+    ValidatableResponse response = HTTPMethods
+            .get(String.format(APIPathes.existingCommentInIssue, issueId, link));
     response.statusCode(404);
     response.contentType(ContentType.JSON);
   }

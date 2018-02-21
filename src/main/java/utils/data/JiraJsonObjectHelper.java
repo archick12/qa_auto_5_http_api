@@ -56,3 +56,4 @@ public class JiraJsonObjectHelper {
     return remoteLinkJSON.toJSONString();
   }
 }
+
