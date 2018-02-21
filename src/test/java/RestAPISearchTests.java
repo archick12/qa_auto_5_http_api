@@ -60,4 +60,23 @@ public class RestAPISearchTests {
     }
   }
 
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void searchByAllTypes() {
+    searchByType("Bug");
+    searchByType("Story");
+    searchByType("Epic");
+    searchByType("Improvement");
+    searchByType("Task");
+    searchByType("Sub-task");
+    searchByType("Sub-Defect");
+  }
+
+  public void searchByType(String type) {
+    ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
+//    response.log().all();
+    List<String> searchResult = response.extract().jsonPath().getList("issues.fields.issuetype.name");
+    for (String item : searchResult) {
+      assertEquals(true, item.contains(type));
+    }
+  }
 }

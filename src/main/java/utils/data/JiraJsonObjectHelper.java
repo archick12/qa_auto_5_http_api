@@ -49,7 +49,7 @@ public class JiraJsonObjectHelper {
     JSONObject searchJSON = new JSONObject();
     ArrayList<String> fieldsList = new ArrayList<String>();
     fieldsList.add("project");
-    fieldsList.add("type");
+    fieldsList.add("issuetype");
     fieldsList.add("assignee");
     fieldsList.add("status");
     fieldsList.add("summary");
