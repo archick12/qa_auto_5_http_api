@@ -79,8 +79,8 @@ public class JiraApiActions {
   public static ValidatableResponse createDescription(String issueId, String description) {
     String jsonForAddDescription = JiraJsonObjectHelper.generateJSONForDescription(description);
     ValidatableResponse response = HTTPMethods
-            .post(String.format(APIPathes.addDescriptionInIssue, issueId), jsonForAddDescription);
-    response.statusCode(201);
+            .put(String.format(APIPathes.addDescriptionInIssue, issueId), jsonForAddDescription);
+    response.statusCode(204);
     response.contentType(ContentType.JSON);
     return response;
   }

@@ -42,75 +42,33 @@ public class RestAPIIssueTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
-    RestAssured.baseURI = "http://jira.hillel.it:8080";
-    ValidatableResponse response;
+    /* HTTP Request for add description to issue*/
     String description = "My description";
-    String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\"" + "}}";
+    
+    ValidatableResponse response = JiraApiActions.createDescription(issueId,description);
+    String descriptionFromServer = response.extract().path("fields.description");
+    assertEquals(description, descriptionFromServer);
 
-          /* HTTP Request for add description to issue*/
-    response = given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddDescription).
-        when().
-        put("/rest/api/2/issue/13561").
-        then().log().all();
-
-    String responseBody = response.extract().asString();
-    String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\"" + "}}";
-
-        /* HTTP Request for delete description from issue*/
-    response = given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForDeleteDescription).
-        when().
-        put("/rest/api/2/issue/13561").
-        then().log().all().
-        statusCode(204).contentType(ContentType.JSON);
-
-  }
+    /* HTTP Request for delete description from issue*/
+    String emptyDescription = "";
+    JiraApiActions.createDescription(issueId,description);
+    String editedDescriptionFromServer = response.extract().path("fields.description");
+    assertEquals(description, descriptionFromServer);
+    }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-  public void remoteIssueLinksCRUD() {
-    RestAssured.baseURI = "http://jira.hillel.it:8080";
-    ValidatableResponse response;
-    String jsonForAddRemoteLink = "{\"object\": {\n" +
-        "\"url\": \"https://obmenka.od.ua/\",\n" +
-        "\"title\": \"obmenka\"\n" +
-        "}}";
-    String result = given().
-        header("Accept", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        when().
-        get("/rest/api/2/issue/13561/remotelink").
-        then().
-        log().all().
-        extract().
-        asString();
+  public void addRemoteLinkToIssue() {
+    /* HTTP Request for create new link to Remote Issue */
+          String link = "obmenka";
+    ValidatableResponse response = JiraApiActions.addRemoteLink(issueId);
+    String remoteLinkFromServer = response.extract().path("link");// перепроверить path
+    String remoteLinkId = response.extract().path("id");
+    assertEquals(link, remoteLinkFromServer);
 
-        /* create new link to Remote Issue */
-    response = given().
-        header("Accept", "application/json").
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddRemoteLink).
-        when().
-        post("/rest/api/2/issue/13561/remotelink").
-        then().log().all().
-        statusCode(201).contentType(ContentType.JSON);
-    String responseBody = response.extract().asString();
-    String linkId = response.extract().path("id").toString();
+    /* HTTP Request for delete link to Remote Issue */
+    JiraApiActions.deleteRemoteLinkIssue(issueId, remoteLinkId );
 
-        /* delete link to Remote Issue */
-    given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddRemoteLink).
-        when().
-        delete("/rest/api/2/issue/" + issueId + "/remotelink/" + linkId).
-        then().log().all().
-        statusCode(204).contentType(ContentType.JSON);
-
+       /* HTTP Request for confirm that remoteLink was deleted*/
+    JiraApiActions.getNonExistingRemoteLink(issueId, remoteLinkId);
   }
-}
+  }

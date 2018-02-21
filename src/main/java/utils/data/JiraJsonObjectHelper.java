@@ -15,7 +15,7 @@ public class JiraJsonObjectHelper {
   }
 
   public static String generateJSONForIssue(String projectId, String summary, String issueType,
-      String assignee) {
+                                            String assignee) {
 
     JSONObject issueData = new JSONObject();
     JSONObject fieldsJSONObject = new JSONObject();
@@ -43,4 +43,17 @@ public class JiraJsonObjectHelper {
 
     return commentJSON.toJSONString();
   }
+
+  public static String generateJSONForDescription(String description) {
+    JSONObject descriptionJSON = new JSONObject();
+    descriptionJSON.put("fields", description);
+    return descriptionJSON.toJSONString();
+  }
+
+    public static String generateJSONForAddRemoteLink(String link) {
+    JSONObject remoteLinkJSON = new JSONObject();
+    remoteLinkJSON.put("body", link);
+    return remoteLinkJSON.toJSONString();
+  }
 }
+
