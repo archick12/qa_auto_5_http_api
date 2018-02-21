@@ -46,13 +46,16 @@ public class JiraJsonObjectHelper {
 
   public static String generateJSONForDescription(String description) {
     JSONObject descriptionJSON = new JSONObject();
-    descriptionJSON.put("fields", description);
+    descriptionJSON.put("historyMetadata", description);
     return descriptionJSON.toJSONString();
   }
 
-    public static String generateJSONForAddRemoteLink(String link) {
+  public static String generateJSONForRemoteLink(String url) {
     JSONObject remoteLinkJSON = new JSONObject();
-    remoteLinkJSON.put("body", link);
+    JSONObject urlJSON = new JSONObject();
+    urlJSON.put("url", "QAAUT-487");
+    remoteLinkJSON.put("object", urlJSON);
+    remoteLinkJSON.put("relationship", "blocks");
     return remoteLinkJSON.toJSONString();
   }
 }

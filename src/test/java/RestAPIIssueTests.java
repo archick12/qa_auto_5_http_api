@@ -5,12 +5,15 @@ import org.testng.annotations.Test;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
 
+import java.util.ArrayList;
+
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
 
-  String issueId = "13561";
+  String issueId = "QAAUT-487";//"13561";
+  //String issueName = "QAAUT-487";
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
@@ -45,30 +48,32 @@ public class RestAPIIssueTests {
     /* HTTP Request for add description to issue*/
     String description = "My description";
     
-    ValidatableResponse response = JiraApiActions.createDescription(issueId,description);
-    String descriptionFromServer = response.extract().path("fields.description");
+    ValidatableResponse response = JiraApiActions.createDescription(issueId, description);
+    String descriptionFromServer = response.extract().path("body");
+    //String descriptionId =response.extract().path("id").toString();
     assertEquals(description, descriptionFromServer);
 
     /* HTTP Request for delete description from issue*/
     String emptyDescription = "";
-    JiraApiActions.createDescription(issueId,description);
-    String editedDescriptionFromServer = response.extract().path("fields.description");
-    assertEquals(description, descriptionFromServer);
+    JiraApiActions.createDescription(issueId, emptyDescription);
+    String editedDescriptionFromServer = response.extract().path("body");
+    assertEquals(emptyDescription, editedDescriptionFromServer);
     }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-  public void addRemoteLinkToIssue() {
+  public void RemoteLinkToIssueCRUD() {
     /* HTTP Request for create new link to Remote Issue */
-          String link = "obmenka";
-    ValidatableResponse response = JiraApiActions.addRemoteLink(issueId);
-    String remoteLinkFromServer = response.extract().path("link");// перепроверить path
-    String remoteLinkId = response.extract().path("id");
-    assertEquals(link, remoteLinkFromServer);
+    String url = "https://obmenka.od.ua";
+    String title = "obmenka";
+    ValidatableResponse response = JiraApiActions.addRemoteLink(url);
+    String remoteLinkFromServer = response.extract().path("object.url");// перепроверить path
+    String linkedIssueId = response.extract().path("id");
+    assertEquals(url, title, remoteLinkFromServer);
 
     /* HTTP Request for delete link to Remote Issue */
-    JiraApiActions.deleteRemoteLinkIssue(issueId, remoteLinkId );
+    JiraApiActions.deleteRemoteLinkIssue(issueId, linkedIssueId );
 
-       /* HTTP Request for confirm that remoteLink was deleted*/
-    JiraApiActions.getNonExistingRemoteLink(issueId, remoteLinkId);
+    /* HTTP Request for confirm that remoteLink was deleted*/
+    JiraApiActions.getNonExistingRemoteLink(issueId, linkedIssueId);
   }
   }
