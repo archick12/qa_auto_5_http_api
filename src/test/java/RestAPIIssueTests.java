@@ -62,11 +62,12 @@ public class RestAPIIssueTests {
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void addRemoteLinkToIssue() {
     /* HTTP Request for create new link to Remote Issue */
+    String url = "https://obmenka.od.ua";
     String title = "obmenka";
     ValidatableResponse response = JiraApiActions.addRemoteLink(issueId);
     String remoteLinkFromServer = response.extract().path("object.url");// перепроверить path
     String remoteLinkId = response.extract().path("id");
-    assertEquals(title, remoteLinkFromServer);
+    assertEquals(url, title, remoteLinkFromServer);
 
     /* HTTP Request for delete link to Remote Issue */
     //JiraApiActions.deleteRemoteLinkIssue(issueId, remoteLinkId );
