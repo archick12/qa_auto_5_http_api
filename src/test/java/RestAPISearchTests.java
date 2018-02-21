@@ -28,4 +28,14 @@ public class RestAPISearchTests {
 
   }
 
+
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void searchByAssignee() {
+    /* HTTP Request for search for issuse by Assignee*/
+    String jqlString = Authorization.username;
+    ValidatableResponse response = JiraApiActions.searchForIssues(jqlString);
+    response.log().all();
+
+  }
+
 }
