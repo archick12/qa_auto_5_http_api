@@ -46,7 +46,7 @@ public class JiraJsonObjectHelper {
 
   public static String generateJSONForDescription(String description) {
     JSONObject descriptionJSON = new JSONObject();
-    descriptionJSON.put("body", description);
+    descriptionJSON.put("fields", description);
     return descriptionJSON.toJSONString();
   }
 
