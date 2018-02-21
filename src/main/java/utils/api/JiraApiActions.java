@@ -103,7 +103,7 @@ public class JiraApiActions {
   }*/
 
   public static ValidatableResponse addRemoteLink(String url) {
-    String jsonForAddRemoteLink = JiraJsonObjectHelper.generateJSONForAddRemoteLink(url);
+    String jsonForAddRemoteLink = JiraJsonObjectHelper.generateJSONForRemoteLink(url);
     ValidatableResponse response = HTTPMethods
             .post(String.format(APIPathes.remoteIssueLink, url), jsonForAddRemoteLink);
     response.statusCode(200);

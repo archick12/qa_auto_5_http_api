@@ -50,7 +50,7 @@ public class JiraJsonObjectHelper {
     return descriptionJSON.toJSONString();
   }
 
-  public static String generateJSONForAddRemoteLink(String url) {
+  public static String generateJSONForRemoteLink(String url) {
     JSONObject remoteLinkJSON = new JSONObject();
     JSONObject urlJSON = new JSONObject();
     urlJSON.put("url", "QAAUT-487");
