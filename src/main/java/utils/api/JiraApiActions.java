@@ -77,4 +77,34 @@ public class JiraApiActions {
     response.statusCode(404);
     response.contentType(ContentType.JSON);
   }
+
+  public static ValidatableResponse createFilter(String filterJSON) {
+    ValidatableResponse response = HTTPMethods.post(APIPathes.filter, filterJSON);
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response;
+  }
+
+  public static ValidatableResponse getFilter(String filterId) {
+    ValidatableResponse response = HTTPMethods.get(APIPathes.filter + filterId);
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response;
+  }
+  public static ValidatableResponse deleteFilter(String filterId) {
+    ValidatableResponse response = HTTPMethods
+            .delete(String.format(APIPathes.existingFilter, filterId));
+    response.statusCode(204);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+
+  public static ValidatableResponse getDeletedFilter(String filterId) {
+    ValidatableResponse response = HTTPMethods
+            .delete(String.format(APIPathes.existingFilter, filterId));
+    response.statusCode(400);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
+
 }
