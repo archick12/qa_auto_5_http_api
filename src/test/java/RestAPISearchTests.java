@@ -20,7 +20,7 @@ public class RestAPISearchTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void searchByProject() {
-    /* HTTP Request for search for issuse by project*/
+    /* HTTP Request for search for issues by project*/
     String projectName = "QAAuto5";
     ValidatableResponse response = JiraApiActions.searchForIssues("project = "+ projectName);
     response.log().all();
@@ -33,16 +33,19 @@ public class RestAPISearchTests {
       System.out.println("Assertion passed: " + item);
     }
 
-
   }
 
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void searchByAssignee() {
-    /* HTTP Request for search for issuse by Assignee*/
+    /* HTTP Request for search for issues by Assignee*/
     String assignee = Authorization.username;
     ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
     response.log().all();
+    List<String> searchResultIssuesAssignee = response.extract().jsonPath().getList("issues.fields.assignee");
+    for (String item : searchResultIssuesAssignee) {
+      assertEquals(true, item.contains(assignee));
+    }
 
   }
 
