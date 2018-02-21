@@ -16,7 +16,7 @@ public class RestAPISearchTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void searchByProject() {
-    /* HTTP Request for search for issuse by project*/
+    /* HTTP Request for search for issues by project*/
     String jqlString = "project = QAAUTO5";
     ValidatableResponse response = JiraApiActions.searchForIssues(jqlString);
     response.log().all();
@@ -31,7 +31,7 @@ public class RestAPISearchTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void searchByAssignee() {
-    /* HTTP Request for search for issuse by Assignee*/
+    /* HTTP Request for search for issues by Assignee*/
     String jqlString = Authorization.username;
     ValidatableResponse response = JiraApiActions.searchForIssues(jqlString);
     response.log().all();
