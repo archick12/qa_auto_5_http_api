@@ -37,8 +37,8 @@ public class RestAPISearchTests {
 
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-  public void searchByAssignee() {
-    /* HTTP Request for search for issues by Assignee*/
+  public void searchByCurrentUserAsAssignee() {
+    /* HTTP Request for search for issues by Assignee - Current User*/
     String assignee = Authorization.username;
     ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
     response.log().all();
@@ -46,7 +46,18 @@ public class RestAPISearchTests {
     for (String item : searchResultIssuesAssignee) {
       assertEquals(true, item.contains(assignee));
     }
+  }
 
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void searchByUnassignedAsAssignee() {
+    /* HTTP Request for search for issues by Assignee - Unassigned*/
+    String assignee = "Unassigned";
+    ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
+    response.log().all();
+    List<String> searchResultIssuesAssignee = response.extract().jsonPath().getList("issues.fields.assignee");
+    for (String item : searchResultIssuesAssignee) {
+      assertEquals(true, item.contains(assignee));
+    }
   }
 
 }
