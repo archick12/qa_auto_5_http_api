@@ -12,7 +12,8 @@ import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
 
-  String issueId = "QAAUT-295";
+  String issueId = "QAAUT-487";//"13561";
+  //String issueName = "QAAUT-487";
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
@@ -64,7 +65,7 @@ public class RestAPIIssueTests {
     /* HTTP Request for create new link to Remote Issue */
     String url = "https://obmenka.od.ua";
     String title = "obmenka";
-    ValidatableResponse response = JiraApiActions.addRemoteLink(issueId);
+    ValidatableResponse response = JiraApiActions.addRemoteLink(url);
     String remoteLinkFromServer = response.extract().path("object.url");// перепроверить path
     String remoteLinkId = response.extract().path("id");
     assertEquals(url, title, remoteLinkFromServer);
