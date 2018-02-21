@@ -42,36 +42,33 @@ public class RestAPIIssueTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
-
-    String description = "My description";
-    ValidatableResponse response = JiraApiActions.createDescription(issueId, description);
-    String myDescriptionFromServer = response.extract().path("body");
-    String descriptionId = response.extract().path("id").toString();
-    assertEquals(description,myDescriptionFromServer);
-
     /* HTTP Request for add description to issue*/
-    JiraApiActions.deleteDescription(issueId, descriptionId);
-    String responseBody = response.extract().asString();
+    String description = "My description";
+    
+    ValidatableResponse response = JiraApiActions.createDescription(issueId,description);
+    String descriptionFromServer = response.extract().path("fields.description");
+    assertEquals(description, descriptionFromServer);
 
     /* HTTP Request for delete description from issue*/
-    JiraApiActions.getNonExistingDescription(issueId, descriptionId);
-  }
+    String emptyDescription = "";
+    JiraApiActions.createDescription(issueId,description);
+    String editedDescriptionFromServer = response.extract().path("fields.description");
+    assertEquals(description, descriptionFromServer);
+    }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-  public void remoteIssueLinksCRUD() {
-
+  public void addRemoteLinkToIssue() {
+    /* HTTP Request for create new link to Remote Issue */
+          String link = "obmenka";
     ValidatableResponse response = JiraApiActions.addRemoteLink(issueId);
-    String link = "https://obmenka.od.ua";
-    String myLinkFromServer = response.extract().path("body");
-    String linkId = response.extract().path("id").toString();
-    assertEquals(link, myLinkFromServer);
+    String remoteLinkFromServer = response.extract().path("link");// перепроверить path
+    String remoteLinkId = response.extract().path("id");
+    assertEquals(link, remoteLinkFromServer);
 
-    /* HTTP Request for Delete Remote Link*/
-    JiraApiActions.deleteRemoteLinkIssue(issueId, linkId);
-    String responseLinkBody = response.extract().asString();
+    /* HTTP Request for delete link to Remote Issue */
+    JiraApiActions.deleteRemoteLinkIssue(issueId, remoteLinkId );
 
-    /* HTTP Request for confirm that Remote Link was deleted*/
-    JiraApiActions.getNonExistingRemoteLink(issueId, linkId);
-
+       /* HTTP Request for confirm that remoteLink was deleted*/
+    JiraApiActions.getNonExistingRemoteLink(issueId, remoteLinkId);
   }
-}
+  }
