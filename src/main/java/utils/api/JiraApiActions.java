@@ -77,4 +77,14 @@ public class JiraApiActions {
     response.statusCode(404);
     response.contentType(ContentType.JSON);
   }
+
+  public static ValidatableResponse searchForIssues(String jqlString) {
+    String jsonForSearch = JiraJsonObjectHelper.generateJSONForSearch(jqlString);
+    ValidatableResponse response = HTTPMethods
+            .post(APIPathes.searchIssues, jsonForSearch);
+
+    response.statusCode(200);
+    response.contentType(ContentType.JSON);
+    return response;
+  }
 }
