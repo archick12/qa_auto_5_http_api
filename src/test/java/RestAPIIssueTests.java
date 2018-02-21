@@ -12,7 +12,7 @@ import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
 
-  String issueId = "13561";
+  String issueId = "QAAUT-295";
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
