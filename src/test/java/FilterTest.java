@@ -1,5 +1,6 @@
 import org.testng.annotations.Test;
 import utils.api.*;
+
 import static utils.api.JiraApiActions.createFilter;
 import static utils.api.JiraApiActions.getFilter;
 import static utils.api.JiraApiActions.deleteFilter;
@@ -18,59 +19,67 @@ import static utils.data.JiraJsonObjectHelper.generateJSONForFilterPermission;
 
 public class FilterTest {
 
-    // vars for new filter
-    private String newFilterName = "First filter";
-    private String newFilterDescription = "Filter for test";
-    private String newFilterJQL = "project = QAAUT AND issuetype = Story AND status = Backlog AND priority = Medium";
-    private boolean newFilterFavouriteFlag = true;
-    // vars for existing test filter
-    private final String testFilterID = "10904";
-    private String initialName = "Alesya test filter";
-    private String newName = "Alesya test filter UPDATED";
-    private String initialJQL = "project = QAAUT AND issuetype = Story AND status = Backlog AND priority = Medium";
-    private String newJQL = "project = QAAUT AND issuetype = Bug AND status = Backlog";
-    private String filterFavouriteRequestEmptyBody = "";
-    private String newPermissionType = "group";
-    private String newPermissionGroupname = "jira-software-users";
+  // vars for existing test filter
+  private final String testFilterID = "10904";
 
-    @Test(groups = {"CRITICAL", "HTTP"})
-    public void authenticate() { Authorization.loginToJIRA();}
+  @Test(groups = {"CRITICAL", "HTTP"})
+  public void authenticate() {
+    Authorization.loginToJIRA();
+  }
 
-    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-    public void createNewFilter() {
-       String newFilterID = createFilter(generateJSONForNewFilter(newFilterName, newFilterDescription, newFilterJQL, newFilterFavouriteFlag)).extract().path("id").toString();
-        getFilter(newFilterID);
-        deleteFilter(newFilterID);
-        getDeletedFilter(newFilterID);
-    }
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void createNewFilter() {
+    String newFilterName = "First filter";
+    String newFilterDescription = "Filter for test";
+    String newFilterJQL = "project = QAAUT AND issuetype = Story AND status = Backlog AND priority = Medium";
+    boolean newFilterFavouriteFlag = true;
 
-    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-    public void updateFilterName() {
-        // update filter name
-        updateFilter(testFilterID, generateJSONForFilterName(newName));
-        // update filter name to its initial value
-        updateFilter(testFilterID, generateJSONForFilterName(initialName));
-    }
+    String newFilterID = createFilter(
+        generateJSONForNewFilter(newFilterName, newFilterDescription, newFilterJQL,
+            newFilterFavouriteFlag)).extract().path("id").toString();
+    getFilter(newFilterID);
+    deleteFilter(newFilterID);
+    getDeletedFilter(newFilterID);
+  }
 
-    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-    public void updateFilterJQL() {
-        // update filter jql
-        updateFilter(testFilterID, generateJSONForFilterJQL(newJQL));
-        // update filter jql to its initial value
-        updateFilter(testFilterID, generateJSONForFilterJQL(initialJQL));
-    }
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void updateFilterName() {
+    String initialName = "Alesya test filter";
+    String newName = "Alesya test filter UPDATED";
+    // update filter name
+    updateFilter(testFilterID, generateJSONForFilterName(newName));
+    // update filter name to its initial value
+    updateFilter(testFilterID, generateJSONForFilterName(initialName));
+  }
 
-    // TODO currently this test always returns code 404, need to fix it(don't know how)
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void updateFilterJQL() {
+    String initialJQL = "project = QAAUT AND issuetype = Story AND status = Backlog AND priority = Medium";
+    String newJQL = "project = QAAUT AND issuetype = Bug AND status = Backlog";
+    // update filter jql
+    updateFilter(testFilterID, generateJSONForFilterJQL(newJQL));
+    // update filter jql to its initial value
+    updateFilter(testFilterID, generateJSONForFilterJQL(initialJQL));
+  }
+
+  // TODO currently this test always returns code 404, need to fix it(don't know how)
 //    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
 //    public void addFilterToFavourite() {
+  // String filterFavouriteRequestEmptyBody = "";
+
 //        setFavouriteFlag(testFilterID, filterFavouriteRequestEmptyBody);
 //        deleteFavouriteFlag(testFilterID);
 //    }
 
-    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-    public void setFilterPermissions() {
-        String newPermissionID = addFilterPermission(testFilterID, generateJSONForFilterPermission(newPermissionType, newPermissionGroupname)).extract().path("id").toString().replace("[", "").replace("]", "");
-        getFilterPermission(testFilterID, newPermissionID);
-        deleteFilterPermission(testFilterID, newPermissionID);
-    }
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void setFilterPermissions() {
+    String newPermissionType = "group";
+    String newPermissionGroupname = "jira-software-users";
+
+    String newPermissionID = addFilterPermission(testFilterID,
+        generateJSONForFilterPermission(newPermissionType, newPermissionGroupname)).extract()
+        .path("id").toString().replace("[", "").replace("]", "");
+    getFilterPermission(testFilterID, newPermissionID);
+    deleteFilterPermission(testFilterID, newPermissionID);
+  }
 }
