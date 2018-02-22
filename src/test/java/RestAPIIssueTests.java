@@ -12,8 +12,7 @@ import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
 
-  String issueId = "QAAUT-487";//"13561";
-  //String issueName = "QAAUT-487";
+  String issueId = "QAAUT-487";
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {

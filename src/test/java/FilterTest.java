@@ -34,9 +34,10 @@ public class FilterTest {
     String newFilterJQL = "project = QAAUT AND issuetype = Story AND status = Backlog AND priority = Medium";
     boolean newFilterFavouriteFlag = true;
 
-    String newFilterID = createFilter(
-        generateJSONForNewFilter(newFilterName, newFilterDescription, newFilterJQL,
-            newFilterFavouriteFlag)).extract().path("id").toString();
+    String json = generateJSONForNewFilter(newFilterName, newFilterDescription,
+        newFilterJQL, newFilterFavouriteFlag);
+
+    String newFilterID = createFilter(json).extract().path("id").toString();
     getFilter(newFilterID);
     deleteFilter(newFilterID);
     getDeletedFilter(newFilterID);
@@ -79,6 +80,7 @@ public class FilterTest {
     String newPermissionID = addFilterPermission(testFilterID,
         generateJSONForFilterPermission(newPermissionType, newPermissionGroupname)).extract()
         .path("id").toString().replace("[", "").replace("]", "");
+    //  TODO response.extract().jsonPath().getList("issues.fields.assignee");
     getFilterPermission(testFilterID, newPermissionID);
     deleteFilterPermission(testFilterID, newPermissionID);
   }
