@@ -64,13 +64,13 @@ public class FilterTest {
   }
 
   // TODO currently this test always returns code 404, need to fix it(don't know how)
-//    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-//    public void addFilterToFavourite() {
-  // String filterFavouriteRequestEmptyBody = "";
+  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+  public void addFilterToFavourite() {
+    String filterFavouriteRequestEmptyBody = "";
 
-//        setFavouriteFlag(testFilterID, filterFavouriteRequestEmptyBody);
-//        deleteFavouriteFlag(testFilterID);
-//    }
+    setFavouriteFlag(testFilterID, filterFavouriteRequestEmptyBody);
+    deleteFavouriteFlag(testFilterID);
+  }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void setFilterPermissions() {

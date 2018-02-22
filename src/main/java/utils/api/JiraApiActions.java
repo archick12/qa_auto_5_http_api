@@ -164,7 +164,7 @@ public class JiraApiActions {
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
     return response.log().body();
   }
-
+//
   public static ValidatableResponse setFavouriteFlag(String filterID, String requestBody) {
     ValidatableResponse response = HTTPMethods.put(String.format(APIPathes.filterFavourite, filterID), requestBody);
     Assert.assertEquals(response.extract().statusCode(), 200);
