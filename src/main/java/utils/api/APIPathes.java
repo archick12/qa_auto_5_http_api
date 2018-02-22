@@ -9,4 +9,9 @@ public interface APIPathes {
   String descriptionInIssue = "/rest/api/2/issue/%s";
   String remoteIssueLink = "/rest/api/2/issue/%s/remotelink";
   String existingRemoteIssueLink = "/rest/api/2/issue/%s/remotelink/%s";
+  String filter = "/rest/api/2/filter/";
+  String existingFilter = "/rest/api/2/filter/%s";
+  String filterFavourite = "/rest/api/2/filter/%s/favourite/";
+  String filterAllPermissions = "/rest/api/2/filter/%s/permission/";
+  String filterPermission = "/rest/api/2/filter/%s/permission/%s/";
 }

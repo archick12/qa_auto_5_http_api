@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="HTTP API" >
 
-    <test name="Tests for Edit Issue">
+    <test name="JIRA HTTP tests">
 
         <groups>
             <run>
@@ -12,6 +12,7 @@
 
         <classes>
             <class name="RestAPIIssueTests"/>
+            <class name="FilterTest"/>
         </classes>
     </test>
 
