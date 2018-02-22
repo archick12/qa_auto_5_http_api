@@ -5,12 +5,15 @@ import org.testng.annotations.Test;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
 
+import java.util.ArrayList;
+
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 
 public class RestAPIIssueTests {
 
-  String issueId = "13561";
+  String issueId = "QAAUT-487";//"13561";
+  //String issueName = "QAAUT-487";
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
@@ -31,7 +34,7 @@ public class RestAPIIssueTests {
     response = JiraApiActions.updateComment(issueId, commentId, newComment);
     String newCommentFromServer = response.extract().path("body");
     assertEquals(newComment, newCommentFromServer);
-        
+
     /* HTTP Request for Delete Comment*/
     JiraApiActions.deleteComment(issueId, commentId);
     String responseBody = response.extract().asString();
@@ -42,75 +45,44 @@ public class RestAPIIssueTests {
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
-    RestAssured.baseURI = "http://jira.hillel.it:8080";
-    ValidatableResponse response;
+    /* HTTP Request for add description to issue*/
     String description = "My description";
-    String jsonForAddDescription = "{\"fields\":{" + "\"description\": \"My description\"" + "}}";
 
-          /* HTTP Request for add description to issue*/
-    response = given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddDescription).
-        when().
-        put("/rest/api/2/issue/13561").
-        then().log().all();
+    JiraApiActions.createDescription(issueId, description);
+    ValidatableResponse response = JiraApiActions.getDescription(issueId);
+    String descriptionFromServer = response.extract().path("fields.description");
+    assertEquals(description, descriptionFromServer);
 
-    String responseBody = response.extract().asString();
-    String jsonForDeleteDescription = "{\"fields\":{" + "\"description\": \"\"" + "}}";
+    /* HTTP Request for delete description from issue*/
 
-        /* HTTP Request for delete description from issue*/
-    response = given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForDeleteDescription).
-        when().
-        put("/rest/api/2/issue/13561").
-        then().log().all().
-        statusCode(204).contentType(ContentType.JSON);
-
+    String emptyDescription = "";
+    JiraApiActions.createDescription(issueId, emptyDescription);
+    response = JiraApiActions.getDescription(issueId);
+    descriptionFromServer = response.extract().path("fields.description");
+    assertEquals(null, descriptionFromServer);
   }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-  public void remoteIssueLinksCRUD() {
-    RestAssured.baseURI = "http://jira.hillel.it:8080";
-    ValidatableResponse response;
-    String jsonForAddRemoteLink = "{\"object\": {\n" +
-        "\"url\": \"https://obmenka.od.ua/\",\n" +
-        "\"title\": \"obmenka\"\n" +
-        "}}";
-    String result = given().
-        header("Accept", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        when().
-        get("/rest/api/2/issue/13561/remotelink").
-        then().
-        log().all().
-        extract().
-        asString();
+  public void RemoteLinkToIssueCRUD() {
+    /* HTTP Request for create new link to Remote Issue */
+    String url = "http://jira.hillel.it:8080/browse/QAAUT-289";
+    String title = "github";
 
-        /* create new link to Remote Issue */
-    response = given().
-        header("Accept", "application/json").
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddRemoteLink).
-        when().
-        post("/rest/api/2/issue/13561/remotelink").
-        then().log().all().
-        statusCode(201).contentType(ContentType.JSON);
-    String responseBody = response.extract().asString();
-    String linkId = response.extract().path("id").toString();
+    ValidatableResponse response = JiraApiActions.addRemoteLink(issueId, url, title);
+    String urlOfRemoteLinkFromServer = response.extract().path("self").toString();
+    String linkedIssueId = response.extract().path("id").toString();
 
-        /* delete link to Remote Issue */
-    given().
-        header("Content-Type", "application/json").
-        header("Cookie", "JSESSIONID=" + Authorization.JSESSIONID).
-        body(jsonForAddRemoteLink).
-        when().
-        delete("/rest/api/2/issue/" + issueId + "/remotelink/" + linkId).
-        then().log().all().
-        statusCode(204).contentType(ContentType.JSON);
+    // https://stackoverflow.com/questions/11007008/whats-the-best-way-to-check-if-a-string-contains-a-url-in-java-android
+    boolean containsOnlyNumbers = linkedIssueId.matches("[0-9]+") && linkedIssueId.length() > 1;
+    boolean containsUrlToLink = urlOfRemoteLinkFromServer.contains("/remotelink/" + linkedIssueId);
 
+    assertEquals(true, containsOnlyNumbers);
+    assertEquals(true, containsUrlToLink);
+
+    /* HTTP Request for delete link to Remote Issue */
+    JiraApiActions.deleteRemoteLinkIssue(issueId, linkedIssueId);
+
+    /* HTTP Request for confirm that remoteLink was deleted*/
+    JiraApiActions.getNonExistingRemoteLink(issueId, linkedIssueId);
   }
 }

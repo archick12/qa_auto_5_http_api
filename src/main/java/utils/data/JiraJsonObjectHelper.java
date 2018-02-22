@@ -3,6 +3,8 @@ package utils.data;
 import org.json.simple.JSONObject;
 import utils.api.Authorization;
 
+import java.util.HashMap;
+
 public class JiraJsonObjectHelper {
 
 
@@ -15,7 +17,7 @@ public class JiraJsonObjectHelper {
   }
 
   public static String generateJSONForIssue(String projectId, String summary, String issueType,
-      String assignee) {
+                                            String assignee) {
 
     JSONObject issueData = new JSONObject();
     JSONObject fieldsJSONObject = new JSONObject();
@@ -43,4 +45,27 @@ public class JiraJsonObjectHelper {
 
     return commentJSON.toJSONString();
   }
+
+  public static String generateJSONForDescription(String description) {
+    JSONObject descriptionJSON = new JSONObject();
+    JSONObject descriptionValue = new JSONObject();
+
+    descriptionValue.put("description", description);
+    descriptionJSON.put("fields", descriptionValue);
+
+    return descriptionJSON.toJSONString();
+  }
+
+  public static String generateJSONForRemoteLink(String url, String title) {
+    JSONObject remoteLinkJSON = new JSONObject();
+    JSONObject objectJSON = new JSONObject();
+
+    objectJSON.put("url", url);
+    objectJSON.put("title", title);
+
+    remoteLinkJSON.put("relationship", "blocks");
+    remoteLinkJSON.put("object", objectJSON);
+    return remoteLinkJSON.toJSONString();
+  }
 }
+
