@@ -1,6 +1,7 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 import utils.api.Authorization;
@@ -60,23 +61,17 @@ public class RestAPISearchTests {
     }
   }
 
-  @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
-  public void searchByAllTypes() {
-    searchByType("Bug");
-    searchByType("Story");
-    searchByType("Epic");
-    searchByType("Improvement");
-    searchByType("Task");
-    searchByType("Sub-task");
-    searchByType("Sub-Defect");
-  }
-
-  public void searchByType(String type) {
-    ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
-//    response.log().all();
-    List<String> searchResult = response.extract().jsonPath().getList("issues.fields.issuetype.name");
-    for (String item : searchResult) {
-      assertEquals(true, item.contains(type));
+    @DataProvider
+    public Object[][] getIssueTypesData(){
+        return new Object[][]{{"Bug"},{"Story"},{"Epic"},{"Improvement"},{"Task"},{"Sub-task"},{"Sub-Defect"}};
     }
-  }
+
+    @Test(dataProvider = "getIssueTypesData",groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+    public void searchIssuesByDifferentType(String type) {
+      ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
+      List<String> searchResult = response.extract().jsonPath().getList("issues.fields.issuetype.name");
+      for (String item : searchResult) {
+        assertEquals(true, item.contains(type));
+      }
+    }
 }
