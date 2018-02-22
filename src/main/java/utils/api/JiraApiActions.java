@@ -76,6 +76,16 @@ public class JiraApiActions {
     response.contentType(ContentType.JSON);
   }
 
+  public static ValidatableResponse searchForIssues(String jqlString) {
+    String jsonForSearch = JiraJsonObjectHelper.generateJSONForSearch(jqlString);
+    ValidatableResponse response = HTTPMethods
+            .post(APIPathes.searchIssues, jsonForSearch);
+    response.log().all();
+    response.statusCode(200);
+    response.contentType(ContentType.JSON);
+    return response;
+    }
+
   public static ValidatableResponse createDescription(String issueId, String description) {
     String jsonForAddDescription = JiraJsonObjectHelper.generateJSONForDescription(description);
     ValidatableResponse response = HTTPMethods
@@ -196,4 +206,5 @@ public class JiraApiActions {
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
     return response.log().body();
   }
+
 }

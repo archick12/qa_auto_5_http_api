@@ -2,6 +2,7 @@ package utils.data;
 
 import org.json.simple.JSONObject;
 import utils.api.Authorization;
+import java.util.ArrayList;
 
 import java.util.HashMap;
 
@@ -44,6 +45,23 @@ public class JiraJsonObjectHelper {
     commentJSON.put("body", comment);
 
     return commentJSON.toJSONString();
+  }
+
+  public static String generateJSONForSearch(String searchString) {
+    JSONObject searchJSON = new JSONObject();
+    ArrayList<String> fieldsList = new ArrayList<String>();
+    fieldsList.add("project");
+    fieldsList.add("issuetype");
+    fieldsList.add("assignee");
+    fieldsList.add("status");
+    fieldsList.add("summary");
+
+    searchJSON.put("jql", searchString);
+    searchJSON.put("startAt", 0);
+    searchJSON.put("maxResults", 50);
+    searchJSON.put("fields",fieldsList);
+
+    return searchJSON.toJSONString();
   }
 
   public static String generateJSONForDescription(String description) {
@@ -96,4 +114,5 @@ public class JiraJsonObjectHelper {
     return permission.toJSONString();
   }
 }
+
 
