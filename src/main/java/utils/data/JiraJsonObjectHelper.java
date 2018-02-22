@@ -67,5 +67,33 @@ public class JiraJsonObjectHelper {
     remoteLinkJSON.put("object", objectJSON);
     return remoteLinkJSON.toJSONString();
   }
+
+  public static String generateJSONForNewFilter(String filterName, String filterDescription, String filterJQL, boolean filterFavouriteFlag) {
+    JSONObject newFilter = new JSONObject();
+    newFilter.put("name", filterName);
+    newFilter.put("description", filterDescription);
+    newFilter.put("jql", filterJQL);
+    newFilter.put("favourite", filterFavouriteFlag);
+    return newFilter.toJSONString();
+  }
+
+  public static String generateJSONForFilterName(String filterName) {
+    JSONObject name = new JSONObject();
+    name.put("name", filterName);
+    return name.toJSONString();
+  }
+
+  public static String generateJSONForFilterJQL(String filterJQL) {
+    JSONObject jql = new JSONObject();
+    jql.put("jql", filterJQL);
+    return jql.toJSONString();
+  }
+
+  public static String generateJSONForFilterPermission(String type, String groupname) {
+    JSONObject permission = new JSONObject();
+    permission.put("type", type);
+    permission.put("groupname", groupname);
+    return permission.toJSONString();
+  }
 }
 

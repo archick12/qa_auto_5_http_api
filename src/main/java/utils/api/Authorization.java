@@ -11,8 +11,8 @@ public class Authorization {
 
   public static String JSESSIONID;
   public static String BASE_URI = "http://jira.hillel.it:8080";
-  public static String username = "qa_auto_5_team_1";
-  public static String password = "qa_auto_5_team_1";
+  public static String username = "qa_auto_5_team_2";
+  public static String password = "qa_auto_5_team_2";
 //  static final Logger logger = Logger.getLogger(Authorization.class);
 
   public static void loginToJIRA() {

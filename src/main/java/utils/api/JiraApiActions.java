@@ -112,10 +112,88 @@ public class JiraApiActions {
     response.contentType(ContentType.JSON);
     return response;
   }
+
   public static void getNonExistingRemoteLink(String issueId, String linkedIssueId) {
     ValidatableResponse response = HTTPMethods
             .get(String.format(APIPathes.existingRemoteIssueLink, issueId, linkedIssueId));
     response.statusCode(404);
     response.contentType(ContentType.JSON);
+  }
+
+  public static ValidatableResponse createFilter(String requestBody) {
+    ValidatableResponse response = HTTPMethods.post(APIPathes.filter, requestBody);
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse getFilter(String filterId) {
+    ValidatableResponse response = HTTPMethods.get(APIPathes.filter + filterId);
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse deleteFilter(String filterId) {
+    ValidatableResponse response = HTTPMethods.delete(String.format(APIPathes.existingFilter, filterId));
+    Assert.assertEquals(response.extract().statusCode(), 204);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse getDeletedFilter(String filterId) {
+    ValidatableResponse response = HTTPMethods.delete(String.format(APIPathes.existingFilter, filterId));
+    Assert.assertEquals(response.extract().statusCode(), 400);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse updateFilter(String filterID, String requestBody) {
+    ValidatableResponse response = HTTPMethods.put(APIPathes.filter + filterID, requestBody);
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse setFavouriteFlag(String filterID, String requestBody) {
+    ValidatableResponse response = HTTPMethods.put(String.format(APIPathes.filterFavourite, filterID), requestBody);
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse deleteFavouriteFlag(String filterID) {
+    ValidatableResponse response = HTTPMethods.delete(String.format(APIPathes.filterFavourite, filterID));
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse getFilterPermission(String filterID, String permissionID) {
+    ValidatableResponse response = HTTPMethods.get(String.format(APIPathes.filterPermission, filterID, permissionID));
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse getAllFilterPermissions(String filterID) {
+    ValidatableResponse response = HTTPMethods.get(String.format(APIPathes.filterAllPermissions, filterID));
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse addFilterPermission(String filterID, String requestBody) {
+    ValidatableResponse response = HTTPMethods.post(String.format(APIPathes.filterAllPermissions, filterID), requestBody);
+    Assert.assertEquals(response.extract().statusCode(), 201);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse deleteFilterPermission(String filterID, String permissionID) {
+    ValidatableResponse response = HTTPMethods.delete(String.format(APIPathes.filterPermission, filterID, permissionID));
+    Assert.assertEquals(response.extract().statusCode(), 204);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
   }
 }
