@@ -16,7 +16,7 @@ import static utils.data.JiraJsonObjectHelper.generateJSONForFilterName;
 import static utils.data.JiraJsonObjectHelper.generateJSONForFilterJQL;
 import static utils.data.JiraJsonObjectHelper.generateJSONForFilterPermission;
 
-public class FilterTest implements APIPathes {
+public class FilterTest {
 
     // vars for new filter
     private String newFilterName = "First filter";
