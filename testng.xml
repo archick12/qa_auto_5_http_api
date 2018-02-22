@@ -1,20 +1,24 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="HTTP API" >
+<suite name="HTTP API">
 
-    <test name="JIRA HTTP tests">
+  <listeners>
+    <listener class-name="utils.framework.HTTPTestsListener"/>
+  </listeners>
 
-        <groups>
-            <run>
-                <include name="HTTP"/>
-                <exclude name="SKIP"/>
-            </run>
-        </groups>
+  <test name="JIRA HTTP tests">
 
-        <classes>
-            <class name="RestAPISearchTests"/>
-            <class name="RestAPIIssueTests"/>
-            <class name="FilterTest"/>
-        </classes>
-    </test>
+    <groups>
+      <run>
+        <include name="HTTP"/>
+        <exclude name="SKIP"/>
+      </run>
+    </groups>
+
+    <classes>
+      <!--<class name="RestAPISearchTests"/>-->
+      <class name="RestAPIIssueTests"/>
+      <!--<class name="FilterTest"/>-->
+    </classes>
+  </test>
 
 </suite>

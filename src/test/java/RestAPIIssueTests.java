@@ -14,10 +14,10 @@ public class RestAPIIssueTests {
 
   String issueId = "QAAUT-487";
 
-  @Test(groups = {"CRITICAL", "HTTP"})
-  public void authentication() {
-    Authorization.loginToJIRA();
-  }
+//  @Test(groups = {"CRITICAL", "HTTP"})
+//  public void authentication() {
+//
+//  }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void commentCRUD() {
