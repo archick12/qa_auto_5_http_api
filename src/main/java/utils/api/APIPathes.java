@@ -7,5 +7,8 @@ public interface APIPathes {
   String commentInIssue = "/rest/api/2/issue/%s/comment";
   String existingCommentInIssue = "/rest/api/2/issue/%s/comment/%s";
   String searchIssues = "/rest/api/2/search";
+  String descriptionInIssue = "/rest/api/2/issue/%s";
+  String remoteIssueLink = "/rest/api/2/issue/%s/remotelink";
+  String existingRemoteIssueLink = "/rest/api/2/issue/%s/remotelink/%s";
 
 }
