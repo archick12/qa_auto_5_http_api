@@ -16,7 +16,7 @@ public class RestAPIIssueTests {
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
-
+    // TODO do not remove or test will fail with NonExistingGroupException
   }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})

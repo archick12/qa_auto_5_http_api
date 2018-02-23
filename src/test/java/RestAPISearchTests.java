@@ -3,7 +3,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
+import org.apache.log4j.Logger;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
 
@@ -26,15 +26,12 @@ public class RestAPISearchTests {
     /* HTTP Request for search for issues by project*/
     String projectName = "QAAuto5";
     ValidatableResponse response = JiraApiActions.searchForIssues("project = " + projectName);
-    response.log().all();
+//    response.log().all();
     List<String> searchResultIssuesProjectName = response.extract().jsonPath()
         .getList("issues.fields.project.name");
     for (String item : searchResultIssuesProjectName) {
       assertEquals(true, item.contains(projectName));
-//      assertEquals(projectName, item);
-//      TODO fix logger
       logger.info("Assertion passed: " + item);
-      System.out.println("Assertion passed: " + item);
     }
 
   }
