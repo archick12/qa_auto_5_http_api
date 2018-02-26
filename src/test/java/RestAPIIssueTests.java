@@ -17,6 +17,7 @@ public class RestAPIIssueTests {
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
     // TODO do not remove or test will fail with NonExistingGroupException
+    Authorization.loginToJIRA();
   }
 
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})

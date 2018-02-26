@@ -3,13 +3,18 @@ package utils.framework;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import utils.api.APIPathes;
 import utils.api.Authorization;
+import java.util.Map;
 
 public class HTTPTestsListener implements ITestListener {
 
+  final static PropertyReader propertyReader = new PropertyReader();
+  public static Map<String, String> properties = propertyReader
+          .readProperties("jira.properties");
+
+
   public void onTestStart(ITestResult iTestResult) {
-    // TODO
+      // TODO
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
