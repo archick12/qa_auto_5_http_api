@@ -5,14 +5,16 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import static io.restassured.path.json.JsonPath.given;
 import utils.data.JiraJsonObjectHelper;
+import utils.framework.HTTPTestsListener;
+
 import static io.restassured.RestAssured.given;
 
 public class Authorization {
 
   public static String JSESSIONID;
   public static String BASE_URI = "http://jira.hillel.it:8080";
-  public static String username = "qa_auto_5_team_2";
-  public static String password = "qa_auto_5_team_2";
+  public static String username = HTTPTestsListener.properties.get("username");
+  public static String  password = HTTPTestsListener.properties.get("password");
 //  static final Logger logger = Logger.getLogger(Authorization.class);
 
   public static void loginToJIRA() {
