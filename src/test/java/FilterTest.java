@@ -1,5 +1,6 @@
 import org.testng.annotations.Test;
 import utils.api.*;
+import utils.framework.JiraAnnotation;
 
 import static utils.api.JiraApiActions.createFilter;
 import static utils.api.JiraApiActions.getFilter;
@@ -21,12 +22,13 @@ public class FilterTest {
 
   // vars for existing test filter
   private final String testFilterID = "10904";
-
+  @JiraAnnotation(id = "QAAUT-495")
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authenticate() {
     Authorization.loginToJIRA();
   }
 
+  @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void createNewFilter() {
     String newFilterName = "First filter";
@@ -43,6 +45,7 @@ public class FilterTest {
     getDeletedFilter(newFilterID);
   }
 
+  @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void updateFilterName() {
     String initialName = "Alesya test filter";
@@ -53,6 +56,7 @@ public class FilterTest {
     updateFilter(testFilterID, generateJSONForFilterName(initialName));
   }
 
+  @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void updateFilterJQL() {
     String initialJQL = "project = QAAUT AND issuetype = Story AND status = Backlog AND priority = Medium";
@@ -64,6 +68,7 @@ public class FilterTest {
   }
 
   // TODO currently this test always returns code 404, need to fix it(don't know how)
+  @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void addFilterToFavourite() {
     String filterFavouriteRequestEmptyBody = "";
@@ -72,6 +77,7 @@ public class FilterTest {
     deleteFavouriteFlag(testFilterID);
   }
 
+  @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void setFilterPermissions() {
     String newPermissionType = "group";
