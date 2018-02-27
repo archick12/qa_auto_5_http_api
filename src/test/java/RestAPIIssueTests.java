@@ -1,11 +1,7 @@
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.Test;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
-
-import java.util.ArrayList;
 
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
@@ -13,13 +9,17 @@ import static org.testng.Assert.assertEquals;
 public class RestAPIIssueTests {
 
   String issueId = "QAAUT-487";
+  @JiraAnnotation(id = "QAAUT=19")
+  @JiraAnnotationComment(comment = "new test comment")
+
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authentication() {
-    // TODO do not remove or test will fail with NonExistingGroupException
-    Authorization.loginToJIRA();
-  }
 
+      Authorization.loginToJIRA();
+  }
+    @JiraAnnotation(id = "QAAUT=19")
+    @JiraAnnotationComment(comment = "new test comment")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void commentCRUD() {
     /* HTTP Request for Create Comment*/
@@ -43,6 +43,8 @@ public class RestAPIIssueTests {
     JiraApiActions.getNonExistingComment(issueId, commentId);
   }
 
+    @JiraAnnotation(id = "QAAUT=19")
+    @JiraAnnotationComment(comment = "new test comment")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
     /* HTTP Request for add description to issue*/
@@ -61,8 +63,11 @@ public class RestAPIIssueTests {
     descriptionFromServer = response.extract().path("fields.description");
     assertEquals(null, descriptionFromServer);
   }
-
+    @JiraAnnotation(id = "QAAUT=17")
+    @JiraAnnotationComment(comment = "new test comment")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+
+
   public void RemoteLinkToIssueCRUD() {
     /* HTTP Request for create new link to Remote Issue */
     String url = "http://jira.hillel.it:8080/browse/QAAUT-289";
