@@ -4,7 +4,6 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import utils.api.Authorization;
-import utils.api.JiraAnnotation;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -12,12 +11,14 @@ import java.util.Map;
 public class HTTPTestsListener implements ITestListener {
 
   final static PropertyReader propertyReader = new PropertyReader();
-  public static Map<String, String> properties = propertyReader
+  public static Map<String, String> propertiesJira = propertyReader
           .readProperties("jira.properties");
+  public static Map<String, String> propertiesTestRail = propertyReader
+          .readProperties("testrail.properties");
 
 
   public void onTestStart(ITestResult result) {
-      JiraAnnotation(result);
+      getJiraAnnotation(result);
 
   }
 
@@ -45,7 +46,7 @@ public class HTTPTestsListener implements ITestListener {
 
   }
 
-  public void JiraAnnotation (ITestResult result){
+  public void getJiraAnnotation (ITestResult result){
 
     Class myClass = result.getTestClass().getRealClass();
     Method method = null; //

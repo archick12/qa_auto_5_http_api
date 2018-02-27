@@ -1,7 +1,7 @@
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.Test;
 import utils.api.Authorization;
-import utils.api.JiraAnnotation;
+import utils.framework.JiraAnnotation;
 import utils.api.JiraApiActions;
 
 import static io.restassured.RestAssured.given;
