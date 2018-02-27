@@ -15,9 +15,9 @@
     </groups>
 
     <classes>
-      <!--class name="RestAPISearchTests"/-->
+      <class name="RestAPISearchTests"/>
       <class name="RestAPIIssueTests"/>
-      <class name="FilterTest"/>
+      <!--class name="FilterTest"/-->
     </classes>
   </test>
 
