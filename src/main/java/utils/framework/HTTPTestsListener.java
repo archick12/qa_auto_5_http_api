@@ -4,8 +4,7 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import utils.api.Authorization;
-import utils.api.JiraCommentAnnotation;
-import utils.api.JiraIdAnnotation;
+import utils.api.JiraAnnotation;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -18,8 +17,8 @@ public class HTTPTestsListener implements ITestListener {
 
 
   public void onTestStart(ITestResult result) {
-      getJiraId(result);
-      getJiraComment(result);
+      JiraAnnotation(result);
+
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
@@ -45,7 +44,8 @@ public class HTTPTestsListener implements ITestListener {
   public void onFinish(ITestContext iTestContext) {
 
   }
-  public void getJiraId (ITestResult result){
+
+  public void JiraAnnotation (ITestResult result){
 
     Class myClass = result.getTestClass().getRealClass();
     Method method = null; //
@@ -57,27 +57,10 @@ public class HTTPTestsListener implements ITestListener {
       e.printStackTrace();
     }
 
-    JiraIdAnnotation testJiraIdAnnotation = method.getAnnotation(JiraIdAnnotation.class); // Где бы я не выполнялся, Java верни
+    JiraAnnotation testJiraAnnotation = method.getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
     // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
-    System.out.println("ANNOTATION: " + testJiraIdAnnotation);
-    System.out.println("Jira id: " + testJiraIdAnnotation.id()); // верни значение внутри аннотации
-  }
-
-  public void getJiraComment (ITestResult result){
-
-    Class myClass = result.getTestClass().getRealClass();
-    Method method = null; //
-    try {
-      String methodName = result.getMethod().getMethodName();
-      method = myClass.getMethod(methodName); // спрашиваем Java: "Как называется, метод внутри которого
-      // ты сейчас выполняешь этот кусочек кода". Проще говоря - "Где я выполнился?"
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
-    }
-
-    JiraCommentAnnotation testJiraCommentAnnotation = method.getAnnotation(JiraCommentAnnotation.class); // Где бы я не выполнялся, Java верни
-    // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
-    System.out.println("ANNOTATION: " + testJiraCommentAnnotation);
-    System.out.println("Jira comment: " + testJiraCommentAnnotation.comment()); // верни значение внутри аннотации
+    System.out.println("ANNOTATION: " + testJiraAnnotation);
+    System.out.println("Jira id: " + testJiraAnnotation.id());
+    System.out.println("Jira comment: " + testJiraAnnotation.comment()); // верни значение внутри аннотации
   }
 }
