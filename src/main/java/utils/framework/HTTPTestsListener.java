@@ -21,11 +21,13 @@ public class HTTPTestsListener implements ITestListener {
 
     public void onTestStart(ITestResult iTestResult) {
         // TODO
+        logger.info("===== '" + iTestResult.getName()+ "' test started =====");
+        String testCaseId = getTestCaseId(iTestResult);
+        logger.info("Test Case id: " + testCaseId);
     }
 
     public void onTestSuccess(ITestResult iTestResult) {
-        String testCaseId = getTestCaseId(iTestResult);
-        logger.info("Test Case id: " + testCaseId);
+
     }
 
     public void onTestFailure(ITestResult iTestResult) {
@@ -41,6 +43,7 @@ public class HTTPTestsListener implements ITestListener {
     }
 
     public void onStart(ITestContext iTestContext) {
+        logger.info("===== 'Authorization.loginToJIRA' started =====");
         Authorization.loginToJIRA();
     }
 
@@ -51,6 +54,7 @@ public class HTTPTestsListener implements ITestListener {
     public String getTestCaseId(ITestResult iTestResult) {
         Class myClass = iTestResult.getTestClass().getRealClass();
         Method method = null;
+        String id = null;
         try {
             String methodName = iTestResult.getMethod().getMethodName();
             method = myClass.getMethod(methodName);
@@ -58,8 +62,13 @@ public class HTTPTestsListener implements ITestListener {
             e.printStackTrace();
         }
 
-        TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
-        logger.debug("ANNOTATION: " + testCaseAnnotation);
-        return testCaseAnnotation.id();
+        try {
+            TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
+            id = testCaseAnnotation.id();
+            logger.debug("ANNOTATION: " + testCaseAnnotation);
+        } catch (NullPointerException e) {
+            logger.debug("There is no @TestCase annotation over this method");
+        }
+        return id;
     }
 }
