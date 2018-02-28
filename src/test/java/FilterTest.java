@@ -22,7 +22,7 @@ public class FilterTest {
 
   // vars for existing test filter
   private final String testFilterID = "10904";
-  @JiraAnnotation(id = "QAAUT-495")
+
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authenticate() {
     Authorization.loginToJIRA();

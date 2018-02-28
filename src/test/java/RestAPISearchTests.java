@@ -16,7 +16,6 @@ public class RestAPISearchTests {
 
     static final Logger logger = Logger.getLogger(RestAPISearchTests.class);
 
-    @JiraAnnotation(id = "QAAUT-495")
     @Test(groups = {"CRITICAL", "HTTP"})
     public void authentication() {
         Authorization.loginToJIRA();

@@ -6,16 +6,16 @@ import utils.api.JiraApiActions;
 
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 public class RestAPIIssueTests {
 
     String issueId = "QAAUT-487";
 
-    @JiraAnnotation(id = "QAAUT-495")
     @Test(groups = {"CRITICAL", "HTTP"})
     public void authentication() {
-        // TODO do not remove or test will fail with NonExistingGroupException
-        Authorization.loginToJIRA();
+        // do not remove or test will fail with NonExistingGroupException - solution added assert
+        assertNotNull(Authorization.JSESSIONID);
     }
 
     @JiraAnnotation(id = "QAAUT-492")
