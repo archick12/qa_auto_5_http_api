@@ -1,20 +1,27 @@
 package utils.framework;
 
+import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import utils.api.Authorization;
+
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class HTTPTestsListener implements ITestListener {
 
   final static PropertyReader propertyReader = new PropertyReader();
-  public static Map<String, String> properties = propertyReader
+  public static Map<String, String> propertiesJira = propertyReader
           .readProperties("jira.properties");
-
+  public static Map<String, String> propertiesTestRail = propertyReader
+          .readProperties("testrail.properties");
+  static final Logger logger = Logger.getLogger(HTTPTestsListener.class);
 
   public void onTestStart(ITestResult iTestResult) {
-      // TODO
+      logger.info("===== '" + iTestResult.getName()+ "' test started =====");
+      String JiraId = getJiraAnnotation(iTestResult);
+      logger.info("Jira id: " + JiraId);
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
@@ -39,5 +46,19 @@ public class HTTPTestsListener implements ITestListener {
 
   public void onFinish(ITestContext iTestContext) {
 
+  }
+
+  public String getJiraAnnotation (ITestResult iTestResult) {
+      String id = null;
+      Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+      try {
+          JiraAnnotation testJiraAnnotation = method.getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
+          // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
+          id = testJiraAnnotation.id();
+          logger.debug("ANNOTATION: " + testJiraAnnotation);
+      } catch (NullPointerException e) {
+          logger.debug("There is no @JiraAnnotation over this method");
+      }
+      return id;
   }
 }

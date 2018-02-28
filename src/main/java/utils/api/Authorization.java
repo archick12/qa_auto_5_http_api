@@ -13,8 +13,8 @@ public class Authorization {
 
   public static String JSESSIONID;
   public static String BASE_URI = "http://jira.hillel.it:8080";
-  public static String username = HTTPTestsListener.properties.get("username");
-  public static String  password = HTTPTestsListener.properties.get("password");
+  public static String username = HTTPTestsListener.propertiesJira.get("username");
+  public static String  password = HTTPTestsListener.propertiesJira.get("password");
 //  static final Logger logger = Logger.getLogger(Authorization.class);
 
   public static void loginToJIRA() {
