@@ -21,7 +21,7 @@ public class RestAPISearchTests {
         assertNotNull(Authorization.JSESSIONID);
     }
 
-    @TestCase(id = "T1")
+    @TestCase(id = "C1")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByProject() {
         /* HTTP Request for search for issues by project*/
@@ -35,7 +35,7 @@ public class RestAPISearchTests {
         }
     }
 
-    @TestCase(id = "T2")
+    @TestCase(id = "C2")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByCurrentUserAsAssignee() {
         /* HTTP Request for search for issues by Assignee - Current User*/
@@ -49,7 +49,7 @@ public class RestAPISearchTests {
         }
     }
 
-    @TestCase(id = "T3")
+    @TestCase(id = "C3")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByUnassignedAsAssignee() {
         /* HTTP Request for search for issues by Assignee - Unassigned*/
@@ -68,7 +68,7 @@ public class RestAPISearchTests {
         return new Object[][]{{"Bug"}, {"Story"}, {"Epic"}, {"Improvement"}, {"Task"}, {"Sub-task"}, {"Sub-Defect"}};
     }
 
-    @TestCase(id = "T4")
+    @TestCase(id = "C4")
     @Test(dataProvider = "getIssueTypesData", groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchIssuesByDifferentType(String type) {
         ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
