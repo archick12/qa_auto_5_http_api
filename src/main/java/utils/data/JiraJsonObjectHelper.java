@@ -31,8 +31,8 @@ public class JiraJsonObjectHelper {
     assigneeJSONObject.put("name", assignee);
 
     fieldsJSONObject.put("project", projectJSONObject);
-    fieldsJSONObject.put("summary", summary);
     fieldsJSONObject.put("issuetype", issuetypeJSONObject);
+    fieldsJSONObject.put("summary", summary);
     fieldsJSONObject.put("assignee", assigneeJSONObject);
 
     issueData.put("fields", fieldsJSONObject);

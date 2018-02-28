@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import utils.TestCase;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
+import utils.framework.JiraAnnotation;
 
 import java.util.List;
 
@@ -15,6 +16,10 @@ public class RestAPISearchTests {
 
     static final Logger logger = Logger.getLogger(RestAPISearchTests.class);
 
+    @Test(groups = {"CRITICAL", "HTTP"})
+    public void authentication() {
+        Authorization.loginToJIRA();
+    }
 
     @Test(groups = {"CRITICAL", "HTTP"})
     public void authentication() {
@@ -22,9 +27,10 @@ public class RestAPISearchTests {
     }
 
     @TestCase(id = "C1")
+    @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByProject() {
-        /* HTTP Request for search for issues by project*/
+    /* HTTP Request for search for issues by project*/
         String projectName = "QAAuto5";
         ValidatableResponse response = JiraApiActions.searchForIssues("project = " + projectName);
         List<String> searchResultIssuesProjectName = response.extract().jsonPath()
@@ -36,9 +42,10 @@ public class RestAPISearchTests {
     }
 
     @TestCase(id = "C2")
+    @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByCurrentUserAsAssignee() {
-        /* HTTP Request for search for issues by Assignee - Current User*/
+    /* HTTP Request for search for issues by Assignee - Current User*/
         String assignee = Authorization.username;
         ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
         List<String> searchResultIssuesAssignee = response.extract().jsonPath()
@@ -50,9 +57,10 @@ public class RestAPISearchTests {
     }
 
     @TestCase(id = "C3")
+    @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByUnassignedAsAssignee() {
-        /* HTTP Request for search for issues by Assignee - Unassigned*/
+    /* HTTP Request for search for issues by Assignee - Unassigned*/
         String assignee = "Unassigned";
         ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
         List<String> searchResultIssuesAssignee = response.extract().jsonPath()
@@ -69,6 +77,7 @@ public class RestAPISearchTests {
     }
 
     @TestCase(id = "C4")
+    @JiraAnnotation(id = "QAAUT-494")
     @Test(dataProvider = "getIssueTypesData", groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchIssuesByDifferentType(String type) {
         ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
