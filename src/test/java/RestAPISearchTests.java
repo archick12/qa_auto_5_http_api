@@ -21,11 +21,6 @@ public class RestAPISearchTests {
         Authorization.loginToJIRA();
     }
 
-    @Test(groups = {"CRITICAL", "HTTP"})
-    public void authentication() {
-        assertNotNull(Authorization.JSESSIONID);
-    }
-
     @TestCase(id = "C1")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
