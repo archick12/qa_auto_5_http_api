@@ -2,6 +2,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.Test;
+import utils.TestCase;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
 
@@ -20,6 +21,7 @@ public class RestAPIIssueTests {
     Authorization.loginToJIRA();
   }
 
+  @TestCase(id = "C5")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void commentCRUD() {
     /* HTTP Request for Create Comment*/
@@ -43,6 +45,7 @@ public class RestAPIIssueTests {
     JiraApiActions.getNonExistingComment(issueId, commentId);
   }
 
+  @TestCase(id = "C6")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void descriptionCRUD() {
     /* HTTP Request for add description to issue*/
@@ -62,6 +65,7 @@ public class RestAPIIssueTests {
     assertEquals(null, descriptionFromServer);
   }
 
+  @TestCase(id = "C7")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void RemoteLinkToIssueCRUD() {
     /* HTTP Request for create new link to Remote Issue */
