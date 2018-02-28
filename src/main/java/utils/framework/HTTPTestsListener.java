@@ -1,4 +1,5 @@
 package utils.framework;
+
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -21,7 +22,6 @@ public class HTTPTestsListener implements ITestListener {
       logger.info("===== '" + iTestResult.getName()+ "' test started =====");
       String JiraId = getJiraAnnotation(iTestResult);
       logger.info("Jira id: " + JiraId);
-
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
@@ -49,21 +49,8 @@ public class HTTPTestsListener implements ITestListener {
   }
 
   public String getJiraAnnotation (ITestResult iTestResult) {
-
-      Class myClass = iTestResult.getTestClass().getRealClass();
-      Method method = null;
       String id = null;
-      String methodName = iTestResult.getMethod().getMethodName();
-      try {
-          method = myClass.getMethod(methodName); // спрашиваем Java: "Как называется, метод внутри которого
-          // ты сейчас выполняешь этот кусочек кода". Проще говоря - "Где я выполнился?"
-      } catch (NoSuchMethodException e) {
-          try {
-              method = myClass.getMethod(methodName, String.class);
-          } catch (NoSuchMethodException e1) {
-              e1.printStackTrace();
-          }
-      }
+      Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
       try {
           JiraAnnotation testJiraAnnotation = method.getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
           // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
@@ -73,5 +60,5 @@ public class HTTPTestsListener implements ITestListener {
           logger.debug("There is no @JiraAnnotation over this method");
       }
       return id;
-    }
+  }
 }
