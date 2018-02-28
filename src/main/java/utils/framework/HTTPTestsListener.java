@@ -55,13 +55,16 @@ public class HTTPTestsListener implements ITestListener {
         Class myClass = iTestResult.getTestClass().getRealClass();
         Method method = null;
         String id = null;
+        String methodName = iTestResult.getMethod().getMethodName();
         try {
-            String methodName = iTestResult.getMethod().getMethodName();
             method = myClass.getMethod(methodName);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            try {
+                method = myClass.getMethod(methodName, String.class);
+            } catch (NoSuchMethodException e1) {
+                e1.printStackTrace();
+            }
         }
-
         try {
             TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
             id = testCaseAnnotation.id();
