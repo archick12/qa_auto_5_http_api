@@ -13,11 +13,11 @@ import utils.data.JiraJsonObjectHelper;
  */
 public class JiraApiActions {
 
-  public static ValidatableResponse createIssue(String issueJson) {
-    ValidatableResponse response = HTTPMethods.post(APIPathes.issue, issueJson);
+  public static ValidatableResponse createIssue(String issueJSON) {
+    ValidatableResponse response = HTTPMethods.post(APIPathes.issue, issueJSON);
     Assert.assertEquals(response.extract().statusCode(), 201);
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
-    return response.log().body();
+    return response.extract().path("key");
   }
 
   public static ValidatableResponse getIssue(String issueKey) {
