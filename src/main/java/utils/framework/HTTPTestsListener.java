@@ -52,19 +52,8 @@ public class HTTPTestsListener implements ITestListener {
     }
 
     public String getTestCaseId(ITestResult iTestResult) {
-        Class myClass = iTestResult.getTestClass().getRealClass();
-        Method method = null;
         String id = null;
-        String methodName = iTestResult.getMethod().getMethodName();
-        try {
-            method = myClass.getMethod(methodName);
-        } catch (NoSuchMethodException e) {
-            try {
-                method = myClass.getMethod(methodName, String.class);
-            } catch (NoSuchMethodException e1) {
-                e1.printStackTrace();
-            }
-        }
+        Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
         try {
             TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
             id = testCaseAnnotation.id();
