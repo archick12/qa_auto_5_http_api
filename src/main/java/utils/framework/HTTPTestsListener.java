@@ -1,5 +1,5 @@
 package utils.framework;
-
+import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -15,10 +15,12 @@ public class HTTPTestsListener implements ITestListener {
           .readProperties("jira.properties");
   public static Map<String, String> propertiesTestRail = propertyReader
           .readProperties("testrail.properties");
+  static final Logger logger = Logger.getLogger(HTTPTestsListener.class);
 
-
-  public void onTestStart(ITestResult result) {
-      getJiraAnnotation(result);
+  public void onTestStart(ITestResult iTestResult) {
+      logger.info("===== '" + iTestResult.getName()+ "' test started =====");
+      String JiraId = getJiraAnnotation(iTestResult);
+      logger.info("Jira id: " + JiraId);
 
   }
 
@@ -46,22 +48,30 @@ public class HTTPTestsListener implements ITestListener {
 
   }
 
-  public void getJiraAnnotation (ITestResult result){
+  public String getJiraAnnotation (ITestResult iTestResult) {
 
-    Class myClass = result.getTestClass().getRealClass();
-    Method method = null; //
-    try {
-      String methodName = result.getMethod().getMethodName();
-      method = myClass.getMethod(methodName); // спрашиваем Java: "Как называется, метод внутри которого
-      // ты сейчас выполняешь этот кусочек кода". Проще говоря - "Где я выполнился?"
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
+      Class myClass = iTestResult.getTestClass().getRealClass();
+      Method method = null;
+      String id = null;
+      String methodName = iTestResult.getMethod().getMethodName();
+      try {
+          method = myClass.getMethod(methodName); // спрашиваем Java: "Как называется, метод внутри которого
+          // ты сейчас выполняешь этот кусочек кода". Проще говоря - "Где я выполнился?"
+      } catch (NoSuchMethodException e) {
+          try {
+              method = myClass.getMethod(methodName, String.class);
+          } catch (NoSuchMethodException e1) {
+              e1.printStackTrace();
+          }
+      }
+      try {
+          JiraAnnotation testJiraAnnotation = method.getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
+          // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
+          id = testJiraAnnotation.id();
+          logger.debug("ANNOTATION: " + testJiraAnnotation);
+      } catch (NullPointerException e) {
+          logger.debug("There is no @JiraAnnotation over this method");
+      }
+      return id;
     }
-
-    JiraAnnotation testJiraAnnotation = method.getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
-    // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
-    System.out.println("ANNOTATION: " + testJiraAnnotation);
-    System.out.println("Jira id: " + testJiraAnnotation.id());
-    System.out.println("Jira comment: " + testJiraAnnotation.comment()); // верни значение внутри аннотации
-  }
 }
