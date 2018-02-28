@@ -1,9 +1,8 @@
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.apache.log4j.Logger;
+import utils.TestCase;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
 import utils.framework.JiraAnnotation;
@@ -11,6 +10,7 @@ import utils.framework.JiraAnnotation;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 public class RestAPISearchTests {
 
@@ -21,6 +21,12 @@ public class RestAPISearchTests {
         Authorization.loginToJIRA();
     }
 
+    @Test(groups = {"CRITICAL", "HTTP"})
+    public void authentication() {
+        assertNotNull(Authorization.JSESSIONID);
+    }
+
+    @TestCase(id = "C1")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByProject() {
@@ -35,6 +41,7 @@ public class RestAPISearchTests {
         }
     }
 
+    @TestCase(id = "C2")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByCurrentUserAsAssignee() {
@@ -49,6 +56,7 @@ public class RestAPISearchTests {
         }
     }
 
+    @TestCase(id = "C3")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByUnassignedAsAssignee() {
@@ -68,6 +76,7 @@ public class RestAPISearchTests {
         return new Object[][]{{"Bug"}, {"Story"}, {"Epic"}, {"Improvement"}, {"Task"}, {"Sub-task"}, {"Sub-Defect"}};
     }
 
+    @TestCase(id = "C4")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(dataProvider = "getIssueTypesData", groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchIssuesByDifferentType(String type) {

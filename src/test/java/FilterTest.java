@@ -1,4 +1,5 @@
 import org.testng.annotations.Test;
+import utils.TestCase;
 import utils.api.*;
 import utils.framework.JiraAnnotation;
 
@@ -28,6 +29,7 @@ public class FilterTest {
     Authorization.loginToJIRA();
   }
 
+  @TestCase(id = "C8")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void createNewFilter() {
@@ -45,6 +47,7 @@ public class FilterTest {
     getDeletedFilter(newFilterID);
   }
 
+  @TestCase(id = "C9")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void updateFilterName() {
@@ -56,6 +59,7 @@ public class FilterTest {
     updateFilter(testFilterID, generateJSONForFilterName(initialName));
   }
 
+  @TestCase(id = "C10")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void updateFilterJQL() {
@@ -68,6 +72,7 @@ public class FilterTest {
   }
 
   // TODO currently this test always returns code 404, need to fix it(don't know how)
+  @TestCase(id = "C11")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void addFilterToFavourite() {
@@ -77,6 +82,7 @@ public class FilterTest {
     deleteFavouriteFlag(testFilterID);
   }
 
+  @TestCase(id = "C12")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void setFilterPermissions() {

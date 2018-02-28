@@ -9,6 +9,8 @@ import utils.api.Authorization;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import utils.TestCase;
+
 public class HTTPTestsListener implements ITestListener {
 
   final static PropertyReader propertyReader = new PropertyReader();
@@ -21,32 +23,47 @@ public class HTTPTestsListener implements ITestListener {
   public void onTestStart(ITestResult iTestResult) {
       logger.info("===== '" + iTestResult.getName()+ "' test started =====");
       String JiraId = getJiraAnnotation(iTestResult);
+      String testCaseId = getTestCaseId(iTestResult);
       logger.info("Jira id: " + JiraId);
   }
 
-  public void onTestSuccess(ITestResult iTestResult) {
+    public void onTestSuccess(ITestResult iTestResult) {    
+  
+    }
 
-  }
+    public void onTestFailure(ITestResult iTestResult) {
 
-  public void onTestFailure(ITestResult iTestResult) {
+    }
 
-  }
+    public void onTestSkipped(ITestResult iTestResult) {
 
-  public void onTestSkipped(ITestResult iTestResult) {
+    }
 
-  }
+    public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
 
-  public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
+    }
 
-  }
+    public void onStart(ITestContext iTestContext) {
+        logger.info("===== 'Authorization.loginToJIRA' started =====");
+        Authorization.loginToJIRA();
+    }
 
-  public void onStart(ITestContext iTestContext) {
-    Authorization.loginToJIRA();
-  }
+    public void onFinish(ITestContext iTestContext) {
 
-  public void onFinish(ITestContext iTestContext) {
+    }
 
-  }
+  public String getTestCaseId(ITestResult iTestResult) {
+        String id = null;
+        Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        try {
+            TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
+            id = testCaseAnnotation.id();
+            logger.debug("ANNOTATION: " + testCaseAnnotation);
+        } catch (NullPointerException e) {
+            logger.debug("There is no @TestCase annotation over this method");
+        }
+        return id;
+    }
 
   public String getJiraAnnotation (ITestResult iTestResult) {
       String id = null;
@@ -61,4 +78,5 @@ public class HTTPTestsListener implements ITestListener {
       }
       return id;
   }
+
 }
