@@ -8,7 +8,6 @@ import utils.api.Authorization;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-
 import utils.TestCase;
 
 public class HTTPTestsListener implements ITestListener {
@@ -25,32 +24,33 @@ public class HTTPTestsListener implements ITestListener {
       String JiraId = getJiraAnnotation(iTestResult);
       String testCaseId = getTestCaseId(iTestResult);
       logger.info("Jira id: " + JiraId);
+      logger.info("Test Case id: " + testCaseId);
   }
 
-    public void onTestSuccess(ITestResult iTestResult) {    
-  
-    }
+  public void onTestSuccess(ITestResult iTestResult) {
 
-    public void onTestFailure(ITestResult iTestResult) {
+  }
 
-    }
+  public void onTestFailure(ITestResult iTestResult) {
 
-    public void onTestSkipped(ITestResult iTestResult) {
+  }
 
-    }
+  public void onTestSkipped(ITestResult iTestResult) {
 
-    public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
+  }
 
-    }
+  public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
 
-    public void onStart(ITestContext iTestContext) {
-        logger.info("===== 'Authorization.loginToJIRA' started =====");
-        Authorization.loginToJIRA();
-    }
+  }
 
-    public void onFinish(ITestContext iTestContext) {
+  public void onStart(ITestContext iTestContext) {
+    logger.info("===== 'Authorization.loginToJIRA' started =====");
+    Authorization.loginToJIRA();
+  }
 
-    }
+  public void onFinish(ITestContext iTestContext) {
+
+  }
 
   public String getTestCaseId(ITestResult iTestResult) {
         String id = null;
@@ -78,5 +78,4 @@ public class HTTPTestsListener implements ITestListener {
       }
       return id;
   }
-
 }

@@ -18,7 +18,7 @@ public class RestAPISearchTests {
 
     @Test(groups = {"CRITICAL", "HTTP"})
     public void authentication() {
-        Authorization.loginToJIRA();
+        assertNotNull(Authorization.JSESSIONID);
     }
 
     @TestCase(id = "C1")

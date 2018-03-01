@@ -3,6 +3,7 @@ import utils.TestCase;
 import utils.api.*;
 import utils.framework.JiraAnnotation;
 
+import static org.testng.Assert.assertNotNull;
 import static utils.api.JiraApiActions.createFilter;
 import static utils.api.JiraApiActions.getFilter;
 import static utils.api.JiraApiActions.deleteFilter;
@@ -26,7 +27,7 @@ public class FilterTest {
 
   @Test(groups = {"CRITICAL", "HTTP"})
   public void authenticate() {
-    Authorization.loginToJIRA();
+    assertNotNull(Authorization.JSESSIONID);
   }
 
   @TestCase(id = "C8")
