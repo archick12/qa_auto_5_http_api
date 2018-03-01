@@ -1,9 +1,8 @@
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.apache.log4j.Logger;
+import utils.TestCase;
 import utils.api.Authorization;
 import utils.api.JiraApiActions;
 import utils.framework.JiraAnnotation;
@@ -11,6 +10,7 @@ import utils.framework.JiraAnnotation;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 public class RestAPISearchTests {
 
@@ -18,49 +18,58 @@ public class RestAPISearchTests {
 
     @Test(groups = {"CRITICAL", "HTTP"})
     public void authentication() {
-        Authorization.loginToJIRA();
+        assertNotNull(Authorization.JSESSIONID);
     }
 
+    @TestCase(id = "C1")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByProject() {
     /* HTTP Request for search for issues by project*/
         String projectName = "QAAuto5";
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("project = " + projectName);
         List<String> searchResultIssuesProjectName = response.extract().jsonPath()
                 .getList("issues.fields.project.name");
         for (String item : searchResultIssuesProjectName) {
             assertEquals(true, item.contains(projectName));
-            logger.info("Assertion passed: " + item);
+            counter++;
         }
+        logger.info("Assertion passed for '" + projectName + "' project " + counter + " times");
     }
 
+    @TestCase(id = "C2")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByCurrentUserAsAssignee() {
     /* HTTP Request for search for issues by Assignee - Current User*/
         String assignee = Authorization.username;
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
         List<String> searchResultIssuesAssignee = response.extract().jsonPath()
-                .getList("issues.fields.assignee");
+                .getList("issues.fields.assignee.name");
         for (String item : searchResultIssuesAssignee) {
             assertEquals(true, item.contains(assignee));
-            logger.info("Assertion passed: " + item);
+            counter++;
         }
+        logger.info("Assertion passed for '" + assignee + "' assignee " + counter + " times");
     }
 
+    @TestCase(id = "C3")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByUnassignedAsAssignee() {
     /* HTTP Request for search for issues by Assignee - Unassigned*/
         String assignee = "Unassigned";
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
         List<String> searchResultIssuesAssignee = response.extract().jsonPath()
-                .getList("issues.fields.assignee");
+                .getList("issues.fields.assignee.name");
         for (String item : searchResultIssuesAssignee) {
             assertEquals(true, item.contains(assignee));
-            logger.info("Assertion passed: " + item);
+            counter++;
         }
+        logger.info("Assertion passed for '" + assignee + "' assignee " + counter + " times");
     }
 
     @DataProvider
@@ -68,14 +77,18 @@ public class RestAPISearchTests {
         return new Object[][]{{"Bug"}, {"Story"}, {"Epic"}, {"Improvement"}, {"Task"}, {"Sub-task"}, {"Sub-Defect"}};
     }
 
+    @TestCase(id = "C4")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(dataProvider = "getIssueTypesData", groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchIssuesByDifferentType(String type) {
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
         List<String> searchResult = response.extract().jsonPath()
                 .getList("issues.fields.issuetype.name");
         for (String item : searchResult) {
             assertEquals(true, item.contains(type));
+            counter++;
         }
+        logger.info("Assertion passed for '" + type + "' type " + counter + " times");
     }
 }

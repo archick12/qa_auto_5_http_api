@@ -1,5 +1,6 @@
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.Test;
+import utils.TestCase;
 import utils.api.Authorization;
 import utils.framework.JiraAnnotation;
 import utils.api.JiraApiActions;
@@ -18,6 +19,7 @@ public class RestAPIIssueTests {
         assertNotNull(Authorization.JSESSIONID);
     }
 
+    @TestCase(id = "C5")
     @JiraAnnotation(id = "QAAUT-492")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void commentCRUD() {
@@ -42,6 +44,7 @@ public class RestAPIIssueTests {
         JiraApiActions.getNonExistingComment(issueId, commentId);
     }
 
+    @TestCase(id = "C6")
     @JiraAnnotation(id = "QAAUT-492")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void descriptionCRUD() {
@@ -62,6 +65,7 @@ public class RestAPIIssueTests {
         assertEquals(null, descriptionFromServer);
     }
 
+    @TestCase(id = "C7")
     @JiraAnnotation(id = "QAAUT-492")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void RemoteLinkToIssueCRUD() {
