@@ -8,6 +8,7 @@ import utils.api.Authorization;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import utils.TestCase;
 
 public class HTTPTestsListener implements ITestListener {
 
@@ -21,7 +22,9 @@ public class HTTPTestsListener implements ITestListener {
   public void onTestStart(ITestResult iTestResult) {
       logger.info("===== '" + iTestResult.getName()+ "' test started =====");
       String JiraId = getJiraAnnotation(iTestResult);
+      String testCaseId = getTestCaseId(iTestResult);
       logger.info("Jira id: " + JiraId);
+      logger.info("Test Case id: " + testCaseId);
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
@@ -41,12 +44,26 @@ public class HTTPTestsListener implements ITestListener {
   }
 
   public void onStart(ITestContext iTestContext) {
+    logger.info("===== 'Authorization.loginToJIRA' started =====");
     Authorization.loginToJIRA();
   }
 
   public void onFinish(ITestContext iTestContext) {
 
   }
+
+  public String getTestCaseId(ITestResult iTestResult) {
+        String id = null;
+        Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        try {
+            TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
+            id = testCaseAnnotation.id();
+            logger.debug("ANNOTATION: " + testCaseAnnotation);
+        } catch (NullPointerException e) {
+            logger.debug("There is no @TestCase annotation over this method");
+        }
+        return id;
+    }
 
   public String getJiraAnnotation (ITestResult iTestResult) {
       String id = null;
