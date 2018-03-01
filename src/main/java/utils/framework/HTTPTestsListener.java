@@ -115,4 +115,8 @@ public class HTTPTestsListener implements ITestListener {
 
 
   }
+
+  private void updateJiraTicketStatus(String issueId, String comment) {
+
+  }
 }
