@@ -19,7 +19,7 @@ public class RestAPIIssueTests {
         assertNotNull(Authorization.JSESSIONID);
     }
 
-    @TestCase(id = "C5")
+    @TestCase(id = "5")
     @JiraAnnotation(id = "QAAUT-492")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void commentCRUD() {
@@ -44,7 +44,7 @@ public class RestAPIIssueTests {
         JiraApiActions.getNonExistingComment(issueId, commentId);
     }
 
-    @TestCase(id = "C6")
+    @TestCase(id = "6")
     @JiraAnnotation(id = "QAAUT-492")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void descriptionCRUD() {
@@ -65,7 +65,7 @@ public class RestAPIIssueTests {
         assertEquals(null, descriptionFromServer);
     }
 
-    @TestCase(id = "C7")
+    @TestCase(id = "7")
     @JiraAnnotation(id = "QAAUT-492")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void RemoteLinkToIssueCRUD() {

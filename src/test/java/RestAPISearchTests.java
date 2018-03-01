@@ -21,7 +21,7 @@ public class RestAPISearchTests {
         assertNotNull(Authorization.JSESSIONID);
     }
 
-    @TestCase(id = "C1")
+    @TestCase(id = "1")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByProject() {
@@ -38,7 +38,7 @@ public class RestAPISearchTests {
         logger.info("Assertion passed for '" + projectName + "' project " + counter + " times");
     }
 
-    @TestCase(id = "C2")
+    @TestCase(id = "2")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByCurrentUserAsAssignee() {
@@ -55,7 +55,7 @@ public class RestAPISearchTests {
         logger.info("Assertion passed for '" + assignee + "' assignee " + counter + " times");
     }
 
-    @TestCase(id = "C3")
+    @TestCase(id = "3")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchByUnassignedAsAssignee() {
@@ -77,7 +77,7 @@ public class RestAPISearchTests {
         return new Object[][]{{"Bug"}, {"Story"}, {"Epic"}, {"Improvement"}, {"Task"}, {"Sub-task"}, {"Sub-Defect"}};
     }
 
-    @TestCase(id = "C4")
+    @TestCase(id = "4")
     @JiraAnnotation(id = "QAAUT-494")
     @Test(dataProvider = "getIssueTypesData", groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchIssuesByDifferentType(String type) {
