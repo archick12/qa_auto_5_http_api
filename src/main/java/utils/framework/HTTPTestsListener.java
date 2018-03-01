@@ -1,6 +1,8 @@
 package utils.framework;
 
+import java.io.IOException;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -9,30 +11,32 @@ import utils.api.Authorization;
 import java.lang.reflect.Method;
 import java.util.Map;
 import utils.TestCase;
+import utils.test_management_system.TestRailAPIClient;
+import utils.test_management_system.TestRailApiException;
 
 public class HTTPTestsListener implements ITestListener {
 
   final static PropertyReader propertyReader = new PropertyReader();
   public static Map<String, String> propertiesJira = propertyReader
-          .readProperties("jira.properties");
+      .readProperties("jira.properties");
   public static Map<String, String> propertiesTestRail = propertyReader
-          .readProperties("testrail.properties");
+      .readProperties("testrail.properties");
   static final Logger logger = Logger.getLogger(HTTPTestsListener.class);
 
   public void onTestStart(ITestResult iTestResult) {
-      logger.info("===== '" + iTestResult.getName()+ "' test started =====");
-      String JiraId = getJiraAnnotation(iTestResult);
-      String testCaseId = getTestCaseId(iTestResult);
-      logger.info("Jira id: " + JiraId);
-      logger.info("Test Case id: " + testCaseId);
+    logger.info("===== '" + iTestResult.getName() + "' test started =====");
+    String JiraId = getJiraAnnotation(iTestResult);
+    String testCaseId = getTestCaseId(iTestResult);
+    logger.info("Jira id: " + JiraId);
+    logger.info("Test Case id: " + testCaseId);
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
-
+    updateTestRun("1","1");
   }
 
   public void onTestFailure(ITestResult iTestResult) {
-
+    updateTestRun("1", "1");
   }
 
   public void onTestSkipped(ITestResult iTestResult) {
@@ -53,29 +57,62 @@ public class HTTPTestsListener implements ITestListener {
   }
 
   public String getTestCaseId(ITestResult iTestResult) {
-        String id = null;
-        Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-        try {
-            TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
-            id = testCaseAnnotation.id();
-            logger.debug("ANNOTATION: " + testCaseAnnotation);
-        } catch (NullPointerException e) {
-            logger.debug("There is no @TestCase annotation over this method");
-        }
-        return id;
+    String id = null;
+    Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+    try {
+      TestCase testCaseAnnotation = method.getAnnotation(TestCase.class);
+      id = testCaseAnnotation.id();
+      logger.debug("ANNOTATION: " + testCaseAnnotation);
+    } catch (NullPointerException e) {
+      logger.debug("There is no @TestCase annotation over this method");
+    }
+    return id;
+  }
+
+  public String getJiraAnnotation(ITestResult iTestResult) {
+    String id = null;
+    Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+    try {
+      JiraAnnotation testJiraAnnotation = method
+          .getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
+      // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
+      id = testJiraAnnotation.id();
+      logger.debug("ANNOTATION: " + testJiraAnnotation);
+    } catch (NullPointerException e) {
+      logger.debug("There is no @JiraAnnotation over this method");
+    }
+    return id;
+  }
+
+  private void updateTestRun(String testId, String statusId) {
+
+    String testRunId = "";
+    String pathTrail = "";
+    String userTrail = "";
+    String passwordTrail = "";
+
+    testRunId = propertiesTestRail.get("test_run_id");
+    pathTrail = propertiesTestRail.get("path_t");
+    userTrail = propertiesTestRail.get("user_trail");
+    passwordTrail = propertiesTestRail.get("password_trail");
+
+    TestRailAPIClient client = new TestRailAPIClient(pathTrail);
+    client.setUser(userTrail);
+    client.setPassword(passwordTrail);
+
+    JSONObject response = null;
+    JSONObject body = new JSONObject();
+    body.put("status_id", statusId);
+
+    try {
+      response = (JSONObject) client
+          .sendPost("add_result_for_case/" + testRunId + "/" + testId, body);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (TestRailApiException e) {
+      e.printStackTrace();
     }
 
-  public String getJiraAnnotation (ITestResult iTestResult) {
-      String id = null;
-      Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-      try {
-          JiraAnnotation testJiraAnnotation = method.getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
-          // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
-          id = testJiraAnnotation.id();
-          logger.debug("ANNOTATION: " + testJiraAnnotation);
-      } catch (NullPointerException e) {
-          logger.debug("There is no @JiraAnnotation over this method");
-      }
-      return id;
+
   }
 }
