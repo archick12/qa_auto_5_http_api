@@ -27,13 +27,15 @@ public class RestAPISearchTests {
     public void searchByProject() {
     /* HTTP Request for search for issues by project*/
         String projectName = "QAAuto5";
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("project = " + projectName);
         List<String> searchResultIssuesProjectName = response.extract().jsonPath()
                 .getList("issues.fields.project.name");
         for (String item : searchResultIssuesProjectName) {
             assertEquals(true, item.contains(projectName));
-            logger.info("Assertion passed: " + item);
+            counter++;
         }
+        logger.info("Assertion passed for '" + projectName + "' project " + counter + " times");
     }
 
     @TestCase(id = "C2")
@@ -42,13 +44,15 @@ public class RestAPISearchTests {
     public void searchByCurrentUserAsAssignee() {
     /* HTTP Request for search for issues by Assignee - Current User*/
         String assignee = Authorization.username;
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
         List<String> searchResultIssuesAssignee = response.extract().jsonPath()
-                .getList("issues.fields.assignee");
+                .getList("issues.fields.assignee.name");
         for (String item : searchResultIssuesAssignee) {
             assertEquals(true, item.contains(assignee));
-            logger.info("Assertion passed: " + item);
+            counter++;
         }
+        logger.info("Assertion passed for '" + assignee + "' assignee " + counter + " times");
     }
 
     @TestCase(id = "C3")
@@ -57,13 +61,15 @@ public class RestAPISearchTests {
     public void searchByUnassignedAsAssignee() {
     /* HTTP Request for search for issues by Assignee - Unassigned*/
         String assignee = "Unassigned";
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("assignee = " + assignee);
         List<String> searchResultIssuesAssignee = response.extract().jsonPath()
-                .getList("issues.fields.assignee");
+                .getList("issues.fields.assignee.name");
         for (String item : searchResultIssuesAssignee) {
             assertEquals(true, item.contains(assignee));
-            logger.info("Assertion passed: " + item);
+            counter++;
         }
+        logger.info("Assertion passed for '" + assignee + "' assignee " + counter + " times");
     }
 
     @DataProvider
@@ -75,11 +81,14 @@ public class RestAPISearchTests {
     @JiraAnnotation(id = "QAAUT-494")
     @Test(dataProvider = "getIssueTypesData", groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
     public void searchIssuesByDifferentType(String type) {
+        int counter = 0;
         ValidatableResponse response = JiraApiActions.searchForIssues("issuetype = " + type);
         List<String> searchResult = response.extract().jsonPath()
                 .getList("issues.fields.issuetype.name");
         for (String item : searchResult) {
             assertEquals(true, item.contains(type));
+            counter++;
         }
+        logger.info("Assertion passed for '" + type + "' type " + counter + " times");
     }
 }
