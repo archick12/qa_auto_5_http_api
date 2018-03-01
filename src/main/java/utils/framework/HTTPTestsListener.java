@@ -5,9 +5,11 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
+import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import utils.api.Authorization;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
 import utils.TestCase;
@@ -32,11 +34,21 @@ public class HTTPTestsListener implements ITestListener {
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
-    updateTestRun("1","1");
+    String testCaseName = iTestResult.getName();
+    logger.info("TEST: " + testCaseName + " PASSED");
+
+    String testCaseId = retrieveId(iTestResult);
+    updateTestRun(testCaseId, "1");
   }
 
   public void onTestFailure(ITestResult iTestResult) {
-    updateTestRun("1", "1");
+    logger.error("TEST: " + iTestResult.getName() + " FAILED");
+    logger.error(iTestResult.getThrowable().fillInStackTrace());
+
+    // TODO add option to enable / disable post of results
+
+    String testCaseId = retrieveId(iTestResult);
+    // updateTestRun(testCaseId, "5");
   }
 
   public void onTestSkipped(ITestResult iTestResult) {
@@ -113,6 +125,24 @@ public class HTTPTestsListener implements ITestListener {
       e.printStackTrace();
     }
 
+
+  }
+  private String retrieveId(ITestResult iTestResult) {
+
+    ITestNGMethod method = iTestResult.getMethod();
+
+    Class obj = method.getRealClass();
+    Annotation annotation = null;
+
+    try {
+      annotation = obj.getDeclaredMethod(method.getMethodName()).getAnnotation(TestCase.class);
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
+    TestCase testerInfo = (TestCase) annotation;
+    String testCaseId = testerInfo.id();
+    System.out.printf("ANNOTATION: " + testerInfo.id());
+    return testCaseId;
 
   }
 }
