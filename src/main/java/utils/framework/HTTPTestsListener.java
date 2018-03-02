@@ -1,6 +1,7 @@
 package utils.framework;
 
 import java.io.IOException;
+import io.restassured.response.ValidatableResponse;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITestContext;
@@ -11,6 +12,7 @@ import utils.api.Authorization;
 import java.lang.reflect.Method;
 import java.util.Map;
 import utils.TestCase;
+import utils.api.JiraApiActions;
 import utils.test_management_system.TestRailAPIClient;
 import utils.test_management_system.TestRailApiException;
 
@@ -32,11 +34,13 @@ public class HTTPTestsListener implements ITestListener {
   }
 
   public void onTestSuccess(ITestResult iTestResult) {
-    updateTestRun("1","1");
+//    updateTestRun("1","1");
+    updateJiraTicketStatus(true, iTestResult);
   }
 
   public void onTestFailure(ITestResult iTestResult) {
-    updateTestRun("1", "1");
+//    updateTestRun("1", "1");
+      updateJiraTicketStatus(false, iTestResult);
   }
 
   public void onTestSkipped(ITestResult iTestResult) {
@@ -116,7 +120,50 @@ public class HTTPTestsListener implements ITestListener {
 
   }
 
-  private void updateJiraTicketStatus(String issueId, String comment) {
+  private void updateJiraTicketStatus(boolean isTestPassed, ITestResult iTestResult) {
+      String jiraIssueKey = getJiraAnnotation(iTestResult);
+      ValidatableResponse receivedIssue = null;
+      String jiraIssueStatus = null;
+
+      if (jiraIssueKey != null && !jiraIssueKey.equals("")) { // ID in annotation exists
+          try {
+              receivedIssue = JiraApiActions.getIssue(jiraIssueKey);
+              jiraIssueStatus = receivedIssue.extract().jsonPath().get("fields.status.name");
+              logger.debug("Current issue status:" + jiraIssueStatus);
+          } catch (AssertionError error){
+              logger.debug(error.getMessage());
+              logger.warn("Ticket " + jiraIssueKey + " was not found, PLEASE DELETE IT FROM @JiraAnnotation");
+          }
+      }
+      if (receivedIssue != null) { // exist
+          if (isTestPassed) { // passed
+              if (jiraIssueStatus.equals("Done")) { // closed
+                  // do nothing
+              } else { // open ( "Backlog", "In Progress", "Selected for Development")
+                  // TODO -- close & add comment "fixed"
+                  logger.info("Isuue " + jiraIssueKey + " closed with comment \"fixed\"");
+              }
+          } else { //  failed
+              if (jiraIssueStatus.equals("Done")) { // closed
+                  //TODO -- reopen & add comment
+                  logger.info("Isuue " + jiraIssueKey + " reopened with comment \"reopened\"");
+              } else { // open
+                  //TODO -- add comment "still reproduced"
+                  logger.info("Isuue " + jiraIssueKey + " left open with comment \"still reproduced\"");
+              }
+          }
+      } else { // not exist
+          if (isTestPassed == false) { // Test Failed
+              // TODO Create new issue and add new comment to it
+              // TODO Add Summary with failed test and description with logs
+              String newIssueId = "QAAUT-1000"; // TODO get this from Jira's response on successful issue creation
+              logger.info("New Issue " + newIssueId +" created.");
+              logger.info("PLEASE ADD THIS CODE: @JiraAnnotation(id = \"" + newIssueId + "\") " +
+                              "ABOVE " + iTestResult.getMethod().getQualifiedName() + "() METHOD");
+          } else { // Test Passed
+              // Nothing to do.
+          }
+      }
 
   }
 }
