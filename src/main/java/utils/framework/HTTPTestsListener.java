@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import utils.TestCase;
 import utils.api.JiraApiActions;
+import utils.data.JiraJsonObjectHelper;
 import utils.test_management_system.TestRailAPIClient;
 import utils.test_management_system.TestRailApiException;
 
@@ -154,9 +155,14 @@ public class HTTPTestsListener implements ITestListener {
           }
       } else { // not exist
           if (isTestPassed == false) { // Test Failed
-              // TODO Create new issue and add new comment to it
-              // TODO Add Summary with failed test and description with logs
-              String newIssueId = "QAAUT-1000"; // TODO get this from Jira's response on successful issue creation
+              //  Create new issue and add new comment to it
+              ValidatableResponse createIssueResponse = JiraApiActions.createIssue(JiraJsonObjectHelper.generateJSONForIssue("10502",iTestResult.getMethod().getQualifiedName(),"10107","Artur Piluck"));
+              String newIssueId = createIssueResponse.extract().path("key").toString();
+              JiraApiActions.createComment(newIssueId, "Add new test commemt");
+
+              // TODO Add Summary with failed test -done
+              // TODO and description with logs
+//              String newIssueId = "QAAUT-1000"; // TODO get this from Jira's response on successful issue creation
               logger.info("New Issue " + newIssueId +" created.");
               logger.info("PLEASE ADD THIS CODE: @JiraAnnotation(id = \"" + newIssueId + "\") " +
                               "ABOVE " + iTestResult.getMethod().getQualifiedName() + "() METHOD");

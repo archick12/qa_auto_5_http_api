@@ -17,7 +17,8 @@ public class JiraApiActions {
     ValidatableResponse response = HTTPMethods.post(APIPathes.issue, issueJSON);
     Assert.assertEquals(response.extract().statusCode(), 201);
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
-    return response.extract().path("key");
+//    return response.extract().path("key");
+      return response;
   }
 
   public static ValidatableResponse getIssue(String issueKey) {
@@ -39,6 +40,8 @@ public class JiraApiActions {
     Assert.assertEquals(response.extract().statusCode(), 204);
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
   }
+
+
 
   public static ValidatableResponse createComment(String issueId, String comment) {
     String jsonForAddComment = JiraJsonObjectHelper.generateJSONForComment(comment);
