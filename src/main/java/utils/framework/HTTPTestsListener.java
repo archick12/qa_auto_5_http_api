@@ -126,7 +126,7 @@ public class HTTPTestsListener implements ITestListener {
       ValidatableResponse receivedIssue = null;
       String jiraIssueStatus = null;
 
-      if (jiraIssueKey != null && !jiraIssueKey.equals("")) { // ID in annotation exists
+      if (jiraIssueKey != null) { // ID in annotation exists
           try {
               receivedIssue = JiraApiActions.getIssue(jiraIssueKey);
               jiraIssueStatus = receivedIssue.extract().jsonPath().get("fields.status.name");

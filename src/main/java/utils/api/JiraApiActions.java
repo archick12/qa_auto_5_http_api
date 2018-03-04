@@ -207,4 +207,18 @@ public class JiraApiActions {
     return response.log().body();
   }
 
+  public static ValidatableResponse getIssueTransitions(String issueID) {
+    ValidatableResponse response = HTTPMethods.get(String.format(APIPathes.issueTransitions, issueID));
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse doIssueTransition(String issueID, String requestBody) {
+    ValidatableResponse response = HTTPMethods.post(String.format(APIPathes.issueTransitions, issueID), requestBody);
+    Assert.assertEquals(response.extract().statusCode(), 204);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
 }

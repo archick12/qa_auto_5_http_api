@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface JiraAnnotation {
 
-    public String id() default "";
+    public String id();
     public String comment() default "";
 
 
