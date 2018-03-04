@@ -37,11 +37,15 @@ public class HTTPTestsListener implements ITestListener {
   public void onTestSuccess(ITestResult iTestResult) {
 //    updateTestRun("1","1");
     updateJiraTicketStatus(true, iTestResult);
+    // Uncomment the following line to test jira annotation manager
+//      JiraAnnotationManager.updateJiraTicketStatus(iTestResult);
   }
 
   public void onTestFailure(ITestResult iTestResult) {
 //    updateTestRun("1", "1");
       updateJiraTicketStatus(false, iTestResult);
+      // Uncomment the following line to test jira annotation manager
+//      JiraAnnotationManager.updateJiraTicketStatus(iTestResult);
   }
 
   public void onTestSkipped(ITestResult iTestResult) {
