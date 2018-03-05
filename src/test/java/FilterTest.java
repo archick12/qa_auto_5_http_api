@@ -30,7 +30,7 @@ public class FilterTest {
     assertNotNull(Authorization.JSESSIONID);
   }
 
-  @TestCase(id = "C8")
+  @TestCase(id = "8")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void createNewFilter() {
@@ -48,7 +48,7 @@ public class FilterTest {
     getDeletedFilter(newFilterID);
   }
 
-  @TestCase(id = "C9")
+  @TestCase(id = "9")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void updateFilterName() {
@@ -60,7 +60,7 @@ public class FilterTest {
     updateFilter(testFilterID, generateJSONForFilterName(initialName));
   }
 
-  @TestCase(id = "C10")
+  @TestCase(id = "10")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void updateFilterJQL() {
@@ -83,7 +83,7 @@ public class FilterTest {
 //    deleteFavouriteFlag(testFilterID);
 //  }
 
-  @TestCase(id = "C12")
+  @TestCase(id = "12")
   @JiraAnnotation(id = "QAAUT-493")
   @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
   public void setFilterPermissions() {
