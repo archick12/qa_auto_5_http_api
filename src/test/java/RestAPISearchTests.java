@@ -9,8 +9,7 @@ import utils.framework.JiraAnnotation;
 
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 public class RestAPISearchTests {
 
@@ -91,4 +90,13 @@ public class RestAPISearchTests {
         }
         logger.info("Assertion passed for '" + type + "' type " + counter + " times");
     }
+
+////    тестовый тест для дебага
+//    @TestCase(id = "C15")
+//    @JiraAnnotation(id = "QAAUT-4000")
+//    @Test(groups = {"Regression", "HTTP"}, dependsOnGroups = {"CRITICAL"})
+//    public void createIsuueTestForDebug() {
+//        assertTrue(false);
+//    }
+
 }

@@ -113,6 +113,14 @@ public class JiraJsonObjectHelper {
     permission.put("groupname", groupname);
     return permission.toJSONString();
   }
+
+  public static String generateJSONForIssueTransition(String transitionID) {
+    JSONObject transition = new JSONObject();
+    JSONObject transitionData = new JSONObject();
+    transitionData.put("id", transitionID);
+    transition.put("transition", transitionData);
+    return transition.toJSONString();
+  }
 }
 
 

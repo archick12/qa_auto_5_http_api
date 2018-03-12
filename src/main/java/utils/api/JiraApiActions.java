@@ -17,7 +17,8 @@ public class JiraApiActions {
     ValidatableResponse response = HTTPMethods.post(APIPathes.issue, issueJSON);
     Assert.assertEquals(response.extract().statusCode(), 201);
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
-    return response.extract().path("key");
+//    return response.extract().path("key");
+      return response;
   }
 
   public static ValidatableResponse getIssue(String issueKey) {
@@ -39,6 +40,8 @@ public class JiraApiActions {
     Assert.assertEquals(response.extract().statusCode(), 204);
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
   }
+
+
 
   public static ValidatableResponse createComment(String issueId, String comment) {
     String jsonForAddComment = JiraJsonObjectHelper.generateJSONForComment(comment);
@@ -199,6 +202,20 @@ public class JiraApiActions {
 
   public static ValidatableResponse deleteFilterPermission(String filterID, String permissionID) {
     ValidatableResponse response = HTTPMethods.delete(String.format(APIPathes.filterPermission, filterID, permissionID));
+    Assert.assertEquals(response.extract().statusCode(), 204);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse getIssueTransitions(String issueID) {
+    ValidatableResponse response = HTTPMethods.get(String.format(APIPathes.issueTransitions, issueID));
+    Assert.assertEquals(response.extract().statusCode(), 200);
+    Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
+    return response.log().body();
+  }
+
+  public static ValidatableResponse doIssueTransition(String issueID, String requestBody) {
+    ValidatableResponse response = HTTPMethods.post(String.format(APIPathes.issueTransitions, issueID), requestBody);
     Assert.assertEquals(response.extract().statusCode(), 204);
     Assert.assertTrue(response.extract().contentType().contains(ContentType.JSON.toString()));
     return response.log().body();

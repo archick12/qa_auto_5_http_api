@@ -15,5 +15,6 @@ public interface APIPathes {
   String filterFavourite = "/rest/api/2/filter/%s/favourite/";
   String filterAllPermissions = "/rest/api/2/filter/%s/permission/";
   String filterPermission = "/rest/api/2/filter/%s/permission/%s/";
+  String issueTransitions = "/rest/api/2/issue/%s/transitions";
 
 }

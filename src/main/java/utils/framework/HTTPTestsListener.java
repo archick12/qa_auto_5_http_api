@@ -1,7 +1,5 @@
 package utils.framework;
-
 import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITestContext;
@@ -9,11 +7,8 @@ import org.testng.ITestListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import utils.api.Authorization;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
-
 import utils.TestCase;
 import utils.test_management_system.TestRailAPIClient;
 import utils.test_management_system.TestRailApiException;
@@ -27,30 +22,26 @@ public class HTTPTestsListener implements ITestListener {
             .readProperties("testrail.properties");
     static final Logger logger = Logger.getLogger(HTTPTestsListener.class);
 
-    public void onTestStart(ITestResult iTestResult) {
-        logger.info("===== '" + iTestResult.getName() + "' test started =====");
-        String JiraId = getJiraAnnotation(iTestResult);
-        String testCaseId = getTestCaseId(iTestResult);
-        logger.info("Jira id: " + JiraId);
-        logger.info("Test Case id: " + testCaseId);
-    }
-
+  public void onTestStart(ITestResult iTestResult) {
+    logger.info("===== '" + iTestResult.getName() + "' test started =====");
+    String testCaseId = getTestCaseId(iTestResult);
+    logger.info("Test Case id: " + testCaseId);
+  }
     public void onTestSuccess(ITestResult iTestResult) {
         String testCaseName = iTestResult.getName();
         logger.info("TEST: " + testCaseName + " PASSED");
-
         String testCaseId = getTestCaseId(iTestResult);
         updateTestRun(testCaseId, "1");
+        JiraAnnotationManager.updateJiraTicketStatus(iTestResult);
     }
 
     public void onTestFailure(ITestResult iTestResult) {
         logger.error("TEST: " + iTestResult.getName() + " FAILED");
         logger.error(iTestResult.getThrowable().fillInStackTrace());
-
         // TODO add option to enable / disable post of results
-
         String testCaseId = getTestCaseId(iTestResult);
         // updateTestRun(testCaseId, "5");
+        JiraAnnotationManager.updateJiraTicketStatus(iTestResult);
     }
 
     public void onTestSkipped(ITestResult iTestResult) {
@@ -83,50 +74,33 @@ public class HTTPTestsListener implements ITestListener {
         return id;
     }
 
-    public String getJiraAnnotation(ITestResult iTestResult) {
-        String id = null;
-        Method method = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-        try {
-            JiraAnnotation testJiraAnnotation = method
-                    .getAnnotation(JiraAnnotation.class); // Где бы я не выполнялся, Java верни
-            // аннотацию из метода в котором я выполняюсь. Похожим образом можно сделать для класса.
-            id = testJiraAnnotation.id();
-            logger.debug("ANNOTATION: " + testJiraAnnotation);
-        } catch (NullPointerException e) {
-            logger.debug("There is no @JiraAnnotation over this method");
-        }
-        return id;
-    }
+  private void updateTestRun(String testId, String statusId) {
 
-    private void updateTestRun(String testId, String statusId) {
+      String testRunId = "";
+      String pathTrail = "";
+      String userTrail = "";
+      String passwordTrail = "";
 
-        String testRunId = "";
-        String pathTrail = "";
-        String userTrail = "";
-        String passwordTrail = "";
+      testRunId = propertiesTestRail.get("test_run_id");
+      pathTrail = propertiesTestRail.get("path_t");
+      userTrail = propertiesTestRail.get("user_trail");
+      passwordTrail = propertiesTestRail.get("password_trail");
 
-        testRunId = propertiesTestRail.get("test_run_id");
-        pathTrail = propertiesTestRail.get("path_t");
-        userTrail = propertiesTestRail.get("user_trail");
-        passwordTrail = propertiesTestRail.get("password_trail");
+      TestRailAPIClient client = new TestRailAPIClient(pathTrail);
+      client.setUser(userTrail);
+      client.setPassword(passwordTrail);
 
-        TestRailAPIClient client = new TestRailAPIClient(pathTrail);
-        client.setUser(userTrail);
-        client.setPassword(passwordTrail);
+      JSONObject response = null;
+      JSONObject body = new JSONObject();
+      body.put("status_id", statusId);
 
-        JSONObject response = null;
-        JSONObject body = new JSONObject();
-        body.put("status_id", statusId);
-
-        try {
-            response = (JSONObject) client
-                    .sendPost("add_result_for_case/" + testRunId + "/" + testId, body);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TestRailApiException e) {
-            e.printStackTrace();
-        }
-
-
-    }
+      try {
+          response = (JSONObject) client
+                  .sendPost("add_result_for_case/" + testRunId + "/" + testId, body);
+      } catch (IOException e) {
+          e.printStackTrace();
+      } catch (TestRailApiException e) {
+          e.printStackTrace();
+      }
+  }
 }
